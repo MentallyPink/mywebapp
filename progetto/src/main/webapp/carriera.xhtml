@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<title>Carriera</title>
+	<h:outputStylesheet name="test.css" />
+	<link rel="stylesheet" type="text/css" href="test.css" />
+</h:head>
+<h:body>
+	<h:form>
+	
+		<div class="topcars">
+			<div align="center">
+				<!-- 								<h:graphicImage value="/media/imageBoss/Kenji.png"> -->
+				<!-- 									<f:ajax event="click" render="pop_up" -->
+				<!-- 										listener="#{MBDuel.showPopUp(1)}" /> -->
+				<!-- 								</h:graphicImage> -->
+				<h:commandButton value="macchina 1">
+					<f:ajax event="click" render="pop up"
+						listener="#{MBCarriera.showPopUp(1)}" />
+				</h:commandButton>
+
+			</div>
+			<div align="center">
+				<!-- 								<h:graphicImage value="/media/imageBoss/Angie.png"> -->
+				<!-- 									<f:ajax event="click" render="pop_up" -->
+				<!-- 										listener="#{MBDuel.showPopUp(2)}" /> -->
+				<!-- 								</h:graphicImage> -->
+				<h:commandButton value="macchina 2">
+					<f:ajax event="click" render="pop up"
+						listener="#{MBCarriera.showPopUp(2)}" />
+				</h:commandButton>
+			</div>
+			<div align="center">
+				<!-- 								<h:graphicImage value="/media/imageBoss/Wolf.png"> -->
+<!-- 									<f:ajax event="click" render="pop_up" -->
+				<!-- 										listener="#{MBDuel.showPopUp(3)}" /> -->
+				<!-- 								</h:graphicImage> -->
+				<h:commandButton value="macchina 3">
+					<f:ajax event="click" render="pop up"
+						listener="#{MBCarriera.showPopUp(3)}" />
+				</h:commandButton>
+			</div>
+		</div>
+	</h:form>
+</h:body>
+</html>
