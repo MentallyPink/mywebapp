@@ -3,7 +3,10 @@ package org.project.MB;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -30,6 +33,7 @@ public class MBCarriera implements Serializable {
 	private String cssClass;
 	private String carName;
 
+
 	public void choose(int value) {
 		this.cssClass = "overlay-Show";
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -42,8 +46,9 @@ public class MBCarriera implements Serializable {
 			listaMacchine = em.createQuery(criteria).getResultList();
 			for (Carboncar car : listaMacchine) {
 				if (car.getNome().equals("Mazda Rx-8")) {
-					selectedCar = em.find(Carboncar.class, car.getId());
+					this.selectedCar = em.find(Carboncar.class, car.getId());
 					this.carName = "/media/cars/rx8.png";
+					
 				}
 			}
 			System.out.println(selectedCar.getNome());
@@ -53,8 +58,9 @@ public class MBCarriera implements Serializable {
 			listaMacchine = em.createQuery(criteria).getResultList();
 			for (Carboncar car : listaMacchine) {
 				if (car.getNome().equals("Chevrolet Camaro SS")) {
-					selectedCar = em.find(Carboncar.class, car.getId());
+					this.selectedCar = em.find(Carboncar.class, car.getId());
 					this.carName = "/media/cars/ccss.png";
+					
 				}
 			}
 			System.out.println(selectedCar.getNome());
@@ -64,8 +70,9 @@ public class MBCarriera implements Serializable {
 			listaMacchine = em.createQuery(criteria).getResultList();
 			for (Carboncar car : listaMacchine) {
 				if (car.getNome().equals("Alfa Romeo Brera")) {
-					selectedCar = em.find(Carboncar.class, car.getId());
+					this.selectedCar = em.find(Carboncar.class, car.getId());
 					this.carName = "/media/cars/arb.png";
+					
 				}
 				
 			}
@@ -76,6 +83,19 @@ public class MBCarriera implements Serializable {
 	public void noCarShow() {
 		this.cssClass = "overlay-noShow";
 	}
+	
+	public void startCarriera() {
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		
+		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
+		 try {
+			 externalContext.redirect("http://localhost:8080/progetto/faces/inizioCarriera.xhtml");
+		 }catch(Exception e) {
+			 e.printStackTrace();
+		 }
+	}
+	
+
 
 	public Carboncar getSelectedCar() {
 		return selectedCar;
@@ -98,4 +118,5 @@ public class MBCarriera implements Serializable {
 	public void setCarName(String carName) {
 		this.carName = carName;
 	}
+
 }

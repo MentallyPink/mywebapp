@@ -121,7 +121,6 @@ public class MBDuel implements Serializable {
 	
 	@PostConstruct
 	private void init() {
-		System.out.println("qui ci arriva");
 		int id = 0;
 		try {
 			id = (int) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("id");
