@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Carbon</title>
+
+</h:head>
+
+<h:body>
+	<h:outputStylesheet name="style.css" />
+	<link rel="stylesheet" type="text/css" href="style.css" />
+	<f:metadata>
+
+		<f:viewAction action="#{MBCars.moneyAmount}" />
+
+		<f:viewAction action="#{MBCars.moneyForView}" />
+
+
+	</f:metadata>
+
+
+	<!-- INIZIO TABELLA DIV ALTO DX -->
+	<div class="box top">
+
+		<h:form>
+
+			<p:dataTable value="#{MBCars.lista}" var="car" scrollable="true"
+				scrollHeight="275">
+			<!-- 	<p:column>
+
+					<f:facet name="header">ID</f:facet>
+					<h:outputText value="#{car.id}" />
+				</p:column> -->
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					<h:outputText value="#{car.nome}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Classe</f:facet>
+					<h:outputText value="#{car.class_}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Tier</f:facet>
+					<h:outputText value="#{car.tier}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Valore ($)</f:facet>
+					<h:outputText value="#{car.price}" />
+				</p:column>
+				<!-- <p:column>
+					<f:facet name="header">Velocita' massima</f:facet>
+					<h:outputText value="#{car.topSpeed}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Accelerazione</f:facet>
+					<h:outputText value="#{car.acceleration}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Manovrabilita'</f:facet>
+					<h:outputText value="#{car.handling}" />
+				</p:column> -->
+			</p:dataTable>
+		</h:form>
+	</div>
+
+	<!-- FINE TABELLA DIV ALTO  -->
+
+	<!-- INIZIO PANNELLO DIV BASSO SX -->
+	<div class="box bottom-left">
+
+		<div class="pannello left">
+			<h:form>
+				<h:panelGrid columns="2" styleClass="panel-table">
+					<h:outputLabel for="nomefiltr" value="Cerca per Nome"
+						styleClass="labelFilter" />
+					<h:inputText id="nomefiltr" value="#{MBCars.nomeFiltro}"
+						label="nome" styleClass="inputBox" />
+					<h:outputLabel for="classefiltr" value="Cerca per Classe"
+						styleClass="labelFilter" />
+					<h:inputText id="classefiltr" value="#{MBCars.classeFiltro}"
+						label="classe" styleClass="inputBox" />
+					<h:outputLabel for="tierfiltr" value="Cerca per Tier"
+						styleClass="labelFilter" />
+					<h:inputText id="tierfiltr" value="#{MBCars.tierFiltro}"
+						label="tier" styleClass="inputBox" />
+					<h:outputLabel for="prezzofiltr" value="Cerca per Prezzo"
+						styleClass="labelFilter" />
+					<h:inputText id="prezzofiltr" value="#{MBCars.priceFiltro}"
+						label="prezzo" styleClass="inputBox" />
+				</h:panelGrid>
+				<h:commandButton value="cerca" action="#{MBCars.ricercaConFiltri}"
+					styleClass="button filter" />
+			</h:form>
+		</div>
+	</div>
+	<!-- FINE PANNELLO DIV BASSO SX -->
+
+
+
+	<!-- INIZIO SEZIONE UTILIZZO DATI DIV BASSO DX -->
+	<div class="box bottom-right">
+
+		<div class="pannello right">
+			<h:form>
+			<h:commandButton value="Clicca qui per cominciare una carriera"
+					action="#{MBCars.carriera}" styleClass="button "/>
+				<h:commandButton value="Duella" action="#{MBCars.duel}"
+					rendered="#{MBCars.singleCar}" styleClass="button"/>
+				<h:commandButton value="Modifica" action="#{MBCars.showEditCar}"
+					rendered="#{MBCars.singleCar}" styleClass="button" />
+
+				<h:commandButton value="Elimina" action="#{MBCars.deleteCar}"
+					rendered="#{MBCars.singleCar}" styleClass="button " />
+				<h:commandButton value="Refresh"
+					action="#{MBCars.getAllCars(false)}" styleClass="button " />
+				<h:commandButton value="Back to Login" action="#{MBCars.redirect}"
+					style="float:right" styleClass="button " />
+					<h:commandButton value = "Aggiungi" action = "#{MBCars.showInsert}"
+					styleClass = "button" rendered = "#{MBCars.addCar}"/>
+				<!-- INIZIO FORM AGGIUNTA MACCHINA -->
+
+				<h:panelGrid columns="2" styleClass="panel-table"
+					rendered="#{MBCars.addCar}">
+					<h:outputLabel for="carAddNome" value="Nome"
+						styleClass="labelFilter" />
+					<h:inputText id="carAddNome" value="#{MBCars.nome}"
+						styleClass="inputBox" />
+					<h:outputLabel for="carAddClass" value="Classe"
+						styleClass="labelFilter" />
+					<h:inputText id="carAddClasse" value="#{MBCars.classe}"
+						styleClass="inputBox" />
+					<h:outputLabel for="carAddTier" value="Tier"
+						styleClass="labelFilter" />
+					<h:inputText id="carAddTier" value="#{MBCars.tier}"
+						styleClass="inputBox" />
+					<h:outputLabel for="carAddPrice" value="Valore ($)"
+						styleClass="labelFilter" />
+					<h:inputText id="carAddPrice" value="#{MBCars.price}"
+						styleClass="inputBox" />
+				</h:panelGrid>
+				<h:commandButton value="Aggiungi" action="#{MBCars.addCar}"
+					rendered="#{MBCars.addCar}" styleClass="button button-funx" />
+				<!-- FINE FORM AGGIUNTA MACCHINA -->
+
+				<!-- INIZIO FORM MODIFICA MACCHINA -->
+
+				<h:panelGrid columns="2" styleClass="panel-table"
+					rendered="#{MBCars.editCar}">
+					<h:outputLabel for="carEditNome" value="Nome"
+						styleClass="labelFilter" />
+					<h:inputText id="carEditNome" value="#{MBCars.nome}"
+						styleClass="inputBox" />
+					<h:outputLabel for="carEditClass" value="Classe"
+						styleClass="labelFilter" />
+					<h:inputText id="carEditClasse" value="#{MBCars.classe}"
+						styleClass="inputBox" />
+					<h:outputLabel for="carEditTier" value="Tier"
+						styleClass="labelFilter" />
+					<h:inputText id="carEditTier" value="#{MBCars.tier}"
+						styleClass="inputBox" />
+					<h:outputLabel for="carEditPrice" value="Valore ($)"
+						styleClass="labelFilter" />
+					<h:inputText id="carEditPrice" value="#{MBCars.price}"
+						styleClass="inputBox" />
+				</h:panelGrid>
+				<h:commandButton value="Modifica" action="#{MBCars.updateCar}"
+					rendered="#{MBCars.editCar}" styleClass="button button-funx" />
+
+				<!-- FINE FORM MODIFICA MACCHINA -->
+
+			</h:form>
+		</div>
+	</div>
+	<!-- FINE SEZIONE UTILIZZO DATI DIV BASSO DX -->
+
+</h:body>
+
+</html>
