@@ -29,7 +29,8 @@ body {
 	width: 100%;
 	height: 50%;
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(3, 1fr);
+	gap: 5px;
 }
 
 .bottom {
@@ -59,16 +60,6 @@ body {
 	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 9999;
 	display: block;
-}
-
-.overlay-content {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	background-color: #fff;
-	padding: 20px;
-	border-radius: 5px;
 }
 
 .container {
@@ -124,6 +115,10 @@ body {
 	justify-content: space-around;
 	align-items: center;
 	width: 100%;
+}
+.car{
+	width: 100%;
+	padding: 3px;
 }
 
 body .ui-datatable .ui-datatable-scrollable-header {
