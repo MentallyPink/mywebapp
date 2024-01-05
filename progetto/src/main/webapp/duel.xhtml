@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Duel</title>
+
+</h:head>
+<h:body>
+
+	<h:outputStylesheet name="test.css" />
+	<link rel="stylesheet" type="text/css" href="test.css" />
+	<h:form>
+		<f:metadata>
+			<f:viewAction action="#{MBDuel.invisible}" />
+			<f:viewAction action="#{MBDuel.exitScore}" />
+		</f:metadata>
+
+
+		<div align="center">
+			<h:panelGroup id="pop_up" styleClass="#{MBDuel.cssClass}">
+				<h:panelGrid styleClass="container info">
+					<div align="center">
+						<h:graphicImage styleClass="info_image"
+							value="#{MBDuel.image_info}" />
+					</div>
+
+
+
+					<p:dataTable value="#{MBDuel.boss}" var="boss">
+						<p:column>
+							<f:facet name="header">Nome</f:facet>
+							<h:outputText value="#{boss.nome}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">Macchina</f:facet>
+							<h:outputText value="#{boss.macchina}" />
+						</p:column>
+
+						<p:column>
+							<f:facet name="header">Gang</f:facet>
+							<h:outputText value="#{boss.gang}" />
+						</p:column>
+
+					</p:dataTable>
+					<div align="center">
+						<h:commandButton value="duella" action="#{MBDuel.duel}" />
+					</div>
+					<h:commandButton value="esci dal popup">
+						<f:ajax event="click" render="pop_up"
+							listener="#{MBDuel.invisible}" />
+					</h:commandButton>
+				</h:panelGrid>
+			</h:panelGroup>
+		</div>
+
+		<div align="center">
+			<h:panelGroup id="race-pop_up" styleClass="#{MBDuel.raceCss} ">
+				<h:panelGrid styleClass="container info">
+					<h2>Stai Gareggiando!</h2>
+					<h:outputText
+						value="La tua auto: #{MBDuel.macchinaScelta.nome}" />
+						<h:outputText
+						value="L'auto avversaria: #{MBDuel.enemyCar.nome}" />
+					<h:outputText
+						value="|| Percentuale di vittoria: #{MBDuel.score}% ||    
+					Tipologia tracciato #{MBDuel.race} || Esito: #{MBDuel.win} ||" />
+					<h:commandButton value="esci dal popup">
+						<f:ajax event="click" render="race-pop_up"
+							listener="#{MBDuel.exitScore}" />
+					</h:commandButton>
+				</h:panelGrid>
+
+			</h:panelGroup>
+		</div>
+
+		<div class="top">
+			<div align="center">
+				<h:graphicImage value="/media/imageBoss/Kenji.png">
+					<f:ajax event="click" render="pop_up"
+						listener="#{MBDuel.showPopUp(1)}" />
+				</h:graphicImage>
+
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/imageBoss/Angie.png">
+					<f:ajax event="click" render="pop_up"
+						listener="#{MBDuel.showPopUp(2)}" />
+				</h:graphicImage>
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/imageBoss/Wolf.png">
+					<f:ajax event="click" render="pop_up"
+						listener="#{MBDuel.showPopUp(3)}" />
+				</h:graphicImage>
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/imageBoss/Darius.png">
+					<f:ajax event="click" render="pop_up"
+						listener="#{MBDuel.showPopUp(4)}" />
+				</h:graphicImage>
+			</div>
+		</div>
+
+		<div class="bottom">
+			<h:commandButton styleClass="button wide" value="gioca random race"
+				action="#{MBDuel.randomDuel}" />
+
+		</div>
+		<div align="center">
+			<h:outputText value="La tua auto: #{MBDuel.carToView}"
+				style="color: white;" />
+			<br />
+			<h:commandButton value="Click here to change"
+				action="#{MBDuel.redirectIndex}" styleClass="button" />
+		</div>
+	</h:form>
+</h:body>
+</html>
