@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Register</title>
+<h:outputStylesheet name="style.css" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+	
+		<div class="container login">
+		<h:form id="form">
+			<h:panelGroup>
+				<h:panelGrid>
+
+					<h:column>
+						<div align="left">
+							<h:outputLabel for="name" value="Nome: " styleClass="formLabel" />
+						</div>
+						<h:inputText id="name" value="#{MBUser.name}" required="true"
+							requiredMessage="Nome richiesto!" styleClass="inputBox" />
+						<h:message for="name" styleClass="invalid-message" />
+					</h:column>
+
+					<h:column>
+						<div align="left">
+							<h:outputLabel for="surname" value="Cognome: "
+								styleClass="formLabel" />
+						</div>
+						<h:inputText id="surname" value="#{MBUser.surname}"
+							required="true" requiredMessage="Cognome richiesto!"
+							styleClass="inputBox" />
+						<h:message for="surname" styleClass="invalid-message" />
+					</h:column>
+
+					<h:column>
+						<div align="left">
+							<h:outputLabel for="email" value="Email: " styleClass="formLabel" />
+						</div>
+						<h:inputText id="email" value="#{MBUser.email}" required="true"
+							requiredMessage="Email richiesta!" styleClass="inputBox" />
+						<h:message for="email" styleClass="invalid-message" />
+					</h:column>
+
+					<h:column>
+						<div align="left">
+							<h:outputLabel for="password" value="Password: "
+								styleClass="formLabel" />
+						</div>
+						<h:inputSecret id="password" value="#{MBUser.password}"
+							required="true" requiredMessage="Password richiesta!"
+							styleClass="inputBox" />
+						<h:message for="password" styleClass="invalid-message" />
+					</h:column>
+
+					<div align="left">
+						<h:commandButton value="Registrati" action="#{MBUser.register}"
+							styleClass="button log-reg-button" />
+					</div>
+				</h:panelGrid>
+			</h:panelGroup>
+			</h:form>
+		</div>
+	
+
+	<h:form>
+		
+		<h:commandLink value = "Log In" action = "#{MBUser.redirectLogin}" styleClass = "link"/>		
+		
+	</h:form>
+</body>
+</html>
