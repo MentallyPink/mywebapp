@@ -3,7 +3,6 @@ package org.project.MB;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import org.project.Entities.Carbonboss;
 import org.project.Entities.Carboncar;
 
 @ManagedBean

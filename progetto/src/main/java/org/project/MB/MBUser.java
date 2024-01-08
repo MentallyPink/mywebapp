@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;

@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
@@ -220,7 +218,6 @@ public class MBCars implements Serializable {
 	public Money moneyAmount() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Money> criteria = cb.createQuery(Money.class);
-		Root<Money> root = criteria.from(Money.class);
 		money = em.createQuery(criteria).getSingleResult();
 		return money;
 	}

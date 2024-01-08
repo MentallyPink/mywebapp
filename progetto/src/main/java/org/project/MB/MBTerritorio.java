@@ -12,7 +12,7 @@ import javax.persistence.Persistence;
 import org.project.Entities.Carboncar;
 
 @ManagedBean
-public class MBInizioCarriera implements Serializable {
+public class MBTerritorio implements Serializable {
 
 	/**
 	 * 
