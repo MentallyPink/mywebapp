@@ -83,14 +83,46 @@ public class MBCarriera implements Serializable {
 	}
 	
 	public void startCarriera() {
-		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		
-		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
-		 try {
-			 externalContext.redirect("http://localhost:8080/progetto/faces/inizioCarriera.xhtml");
-		 }catch(Exception e) {
-			 e.printStackTrace();
-		 }
+		ExternalContext externalContext;
+		switch(selectedCar.getNome()) {
+		case "Mazda RX-8":
+			
+			externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			
+			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
+			 try {
+				 externalContext.redirect("http://localhost:8080/progetto/faces/Downtown.xhtml");
+			 }catch(Exception e) {
+				 e.printStackTrace();
+			 }
+			
+			break;
+			
+		case "Alfa Romeo Brera":
+			
+			externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			
+			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
+			 try {
+				 externalContext.redirect("http://localhost:8080/progetto/faces/Fortuna.xhtml");
+			 }catch(Exception e) {
+				 e.printStackTrace();
+			 }
+			
+			break;
+		case "Chevrolet Camaro SS":
+			
+			externalContext = FacesContext.getCurrentInstance().getExternalContext();
+			
+			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
+			 try {
+				 externalContext.redirect("http://localhost:8080/progetto/faces/Kempton.xhtml");
+			 }catch(Exception e) {
+				 e.printStackTrace();
+			 }
+			
+			break;
+		}
 	}
 	
 

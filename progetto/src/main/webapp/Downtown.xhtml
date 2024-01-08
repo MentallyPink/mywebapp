@@ -1,0 +1,79 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+<h:head>
+	<title>Downtown</title>
+
+</h:head>
+<h:body>
+
+	<h:outputStylesheet name="test.css" />
+	<link rel="stylesheet" type="text/css" href="test.css" />
+
+	<f:metadata>
+		<f:viewAction action="#{MBTerritorio.exit}" />
+	</f:metadata>
+
+	<h:form>
+		<div align="center">
+			<h:panelGroup id="race-pop_up" styleClass="#{MBTerritorio.cssClass} ">
+				<h:panelGrid styleClass="container info">
+					<h2>Stai Gareggiando!</h2>
+					<h:outputText value="|| qualcosaaa ||" />
+					<h:commandButton value = "test" action = "#{MBDowntown.bossDuel}"/>
+					<h:commandButton value="esci dal popup">
+						<f:ajax event="click" render="race-pop_up"
+							listener="#{MBTerritorio.exit}" />
+					</h:commandButton>
+				</h:panelGrid>
+			</h:panelGroup>
+		</div>
+
+		<div class="grid-3">
+			<div align="center">
+				<h:graphicImage value="/media/races/#{MBTerritorio.races[0]}.jpg">
+					<f:ajax event="click" render="race-pop_up"
+						listener="#{MBTerritorio.show}" />
+				</h:graphicImage>
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/races/#{MBTerritorio.races[1]}.jpg">
+					<f:ajax event="click" render="race-pop_up"
+						listener="#{MBTerritorio.show}" />
+				</h:graphicImage>
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/races/#{MBTerritorio.races[2]}.jpg">
+					<f:ajax event="click" render="race-pop_up"
+						listener="#{MBTerritorio.show}" />
+				</h:graphicImage>
+			</div>
+		</div>
+		<div class="grid-3">
+			<div align="center">
+				<h:graphicImage value="/media/races/#{MBTerritorio.races[3]}.jpg">
+					<f:ajax event="click" render="race-pop_up"
+						listener="#{MBTerritorio.show}" />
+				</h:graphicImage>
+			</div>
+			<div align="center" class = "boss">
+				<h:graphicImage value="/media/races/#{MBTerritorio.races[4]}.jpg">
+					<f:ajax event="click" render="race-pop_up"
+						listener="#{MBTerritorio.show}" />
+				</h:graphicImage>
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/races/#{MBTerritorio.races[4]}.jpg">
+					<f:ajax event="click" render="race-pop_up"
+						listener="#{MBTerritorio.show}" />
+				</h:graphicImage>
+			</div>
+		</div>
+
+	</h:form>
+
+</h:body>
+</html>

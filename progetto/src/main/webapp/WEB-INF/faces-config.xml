@@ -36,8 +36,8 @@
 	</managed-bean>
 	
 		<managed-bean>
-		<managed-bean-name>MBTerritorio</managed-bean-name>
-		<managed-bean-class>org.project.MB.MBTerritorio</managed-bean-class>
+		<managed-bean-name>MBDowntown</managed-bean-name>
+		<managed-bean-class>org.project.MB.MBDowntown</managed-bean-class>
 		<managed-bean-scope>view</managed-bean-scope>
 	</managed-bean>
 	

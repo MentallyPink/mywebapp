@@ -218,6 +218,7 @@ public class MBCars implements Serializable {
 	public Money moneyAmount() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Money> criteria = cb.createQuery(Money.class);
+		Root<Money> root = criteria.from(Money.class);
 		money = em.createQuery(criteria).getSingleResult();
 		return money;
 	}

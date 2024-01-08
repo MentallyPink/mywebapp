@@ -134,7 +134,7 @@ public class MBDuel implements Serializable {
 	}
 
 	public void randomDuel() {
-		// voglio fare drift, drag race, circuito
+		// voglio fare drift, sprint race, circuito
 		// rispettivamente tuner, muscle, exotic hanno vantaggio
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
@@ -165,7 +165,7 @@ public class MBDuel implements Serializable {
 			System.out.println("hai perso");
 	}
 
-	private double _duel(Carboncar mycar, Carboncar bosscar) {
+	public double _duel(Carboncar mycar, Carboncar bosscar) {
 
 		double probVittoria;
 		int differenza;
@@ -179,7 +179,7 @@ public class MBDuel implements Serializable {
 			if (gara == 0)
 				this.race = "drift";
 			if (gara == 1)
-				this.race = "drag";
+				this.race = "sprint";
 			if (gara == 2)
 				this.race = "circuit";
 			
@@ -245,7 +245,7 @@ public class MBDuel implements Serializable {
 		if (gara == 0)
 			this.race = "drift";
 		if (gara == 1)
-			this.race = "drag";
+			this.race = "sprint";
 		if (gara == 2)
 			this.race = "circuit";
 		System.out.println("Tipo di tracciato: " + this.race);
@@ -321,7 +321,7 @@ public class MBDuel implements Serializable {
 			moltiplicatori[1] = accelMolt;
 			moltiplicatori[2] = handlingdMolt;
 			break;
-		case "drag":
+		case "sprint":
 			topSpeedMolt = 0.4;
 			accelMolt = 0.6;
 			handlingdMolt = 0;
