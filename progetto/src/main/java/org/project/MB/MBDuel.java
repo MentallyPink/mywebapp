@@ -165,7 +165,7 @@ public class MBDuel implements Serializable {
 			System.out.println("hai perso");
 	}
 
-	public double _duel(Carboncar mycar, Carboncar bosscar) {
+	private double _duel(Carboncar mycar, Carboncar bosscar) {
 
 		double probVittoria;
 		int differenza;

@@ -136,7 +136,9 @@ body {
 .boss-Show{
 	display:block;
 }
-
+.won-race{
+	opacity: 0.9;
+}
 
 body .ui-datatable .ui-datatable-scrollable-header {
 	background: transparent;

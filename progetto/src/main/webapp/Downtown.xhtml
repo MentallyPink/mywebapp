@@ -1,6 +1,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui">
 
 
@@ -14,19 +15,23 @@
 	<link rel="stylesheet" type="text/css" href="test.css" />
 
 	<f:metadata>
-		<f:viewAction action="#{MBTerritorio.exit}" />
+		<f:viewAction action="#{MBDowntown.exit}" />
 	</f:metadata>
 
 	<h:form>
 		<div align="center">
-			<h:panelGroup id="race-pop_up" styleClass="#{MBTerritorio.cssClass} ">
+			<h:panelGroup id="race-pop_up" styleClass="#{MBDowntown.cssClass} ">
 				<h:panelGrid styleClass="container info">
 					<h2>Stai Gareggiando!</h2>
-					<h:outputText value="|| qualcosaaa ||" />
-					<h:commandButton value = "test" action = "#{MBDowntown.bossDuel}"/>
+					<h:outputText value = "Posizioni: "/> <br/>
+					<ui:repeat value="#{MBDowntown.carMap.entrySet()}" var="player" varStatus="loop">
+					
+						<h:outputText value="N.#{loop.index + 1}: #{player.value}" /><br/>
+					</ui:repeat>
+					<h:commandButton value="test" action="#{MBDowntown.race}" />
 					<h:commandButton value="esci dal popup">
 						<f:ajax event="click" render="race-pop_up"
-							listener="#{MBTerritorio.exit}" />
+							listener="#{MBDowntown.exit}" />
 					</h:commandButton>
 				</h:panelGrid>
 			</h:panelGroup>
@@ -34,41 +39,49 @@
 
 		<div class="grid-3">
 			<div align="center">
-				<h:graphicImage value="/media/races/#{MBTerritorio.races[0]}.jpg">
+				<h:graphicImage value="/media/races/#{MBDowntown.races[0]}.jpg"
+					styleClass="#{MBDowntown.raceState}">
 					<f:ajax event="click" render="race-pop_up"
-						listener="#{MBTerritorio.show}" />
+						listener="#{MBDowntown.show}" />
 				</h:graphicImage>
 			</div>
 			<div align="center">
-				<h:graphicImage value="/media/races/#{MBTerritorio.races[1]}.jpg">
+				<h:graphicImage value="/media/races/#{MBDowntown.races[1]}.jpg"
+					styleClass="#{MBDowntown.raceState}>">
 					<f:ajax event="click" render="race-pop_up"
-						listener="#{MBTerritorio.show}" />
+						listener="#{MBDowntown.show}" />
 				</h:graphicImage>
 			</div>
 			<div align="center">
-				<h:graphicImage value="/media/races/#{MBTerritorio.races[2]}.jpg">
+				<h:graphicImage value="/media/races/#{MBDowntown.races[2]}.jpg"
+					styleClass="#{MBDowntown.raceState}>">
 					<f:ajax event="click" render="race-pop_up"
-						listener="#{MBTerritorio.show}" />
+						listener="#{MBDowntown.show}" />
 				</h:graphicImage>
 			</div>
 		</div>
 		<div class="grid-3">
 			<div align="center">
-				<h:graphicImage value="/media/races/#{MBTerritorio.races[3]}.jpg">
+				<h:graphicImage value="/media/races/#{MBDowntown.races[3]}.jpg"
+					styleClass="#{MBDowntown.raceState}>">
 					<f:ajax event="click" render="race-pop_up"
-						listener="#{MBTerritorio.show}" />
-				</h:graphicImage>
-			</div>
-			<div align="center" class = "boss">
-				<h:graphicImage value="/media/races/#{MBTerritorio.races[4]}.jpg">
-					<f:ajax event="click" render="race-pop_up"
-						listener="#{MBTerritorio.show}" />
+						listener="#{MBDowntown.show}" />
 				</h:graphicImage>
 			</div>
 			<div align="center">
-				<h:graphicImage value="/media/races/#{MBTerritorio.races[4]}.jpg">
+				<h:panelGroup styleClass="#{MBDowntown.bossCss}">
+					<h:graphicImage value="/media/imageBoss/Kenji.png">
+						<f:ajax event="click" render="race-pop_up"
+							listener="#{MBDowntown.show}" />
+					</h:graphicImage>
+				</h:panelGroup>
+
+			</div>
+			<div align="center">
+				<h:graphicImage value="/media/races/#{MBDowntown.races[4]}.jpg"
+					styleClass="#{MBDowntown.raceState}>">
 					<f:ajax event="click" render="race-pop_up"
-						listener="#{MBTerritorio.show}" />
+						listener="#{MBDowntown.show}" />
 				</h:graphicImage>
 			</div>
 		</div>

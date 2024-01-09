@@ -85,7 +85,7 @@ public class MBCarriera implements Serializable {
 	public void startCarriera() {
 		ExternalContext externalContext;
 		switch(selectedCar.getNome()) {
-		case "Mazda RX-8":
+		case "Mazda Rx-8":
 			
 			externalContext = FacesContext.getCurrentInstance().getExternalContext();
 			
