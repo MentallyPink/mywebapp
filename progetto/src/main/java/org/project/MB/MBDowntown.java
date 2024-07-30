@@ -26,6 +26,7 @@ import javax.persistence.criteria.Root;
 
 import org.project.Entities.Carboncar;
 import org.project.Enum.EnumGenerico;
+import org.project.Storage.Gara;
 
 @ManagedBean
 public class MBDowntown implements Serializable {
@@ -50,16 +51,16 @@ public class MBDowntown implements Serializable {
 	private String win;
 	private boolean fromWin;
 	private String[] racers = new String[5];
-
+	
+	private Gara[] racess = {new Gara(), new Gara(), new Gara(), new Gara(), new Gara()};
+ 
 	Map<Double, String> carMap = new LinkedHashMap<>();
 
 	@PostConstruct
 	private void init() {
 		int id = 0;
 		List<String> words = Arrays.asList("drift", "sprint", "circuit");
-		for (int i = 0; i < races.length; i++) {
-			races[i] = ""; // init array
-		}
+
 		int[] counts = new int[words.size()];
 		for (int i = 0; i < 5; i++) {
 			int index;
@@ -68,8 +69,8 @@ public class MBDowntown implements Serializable {
 			} while (counts[index] >= 2);
 
 			counts[index]++;
-			int emptyIndex = findEmptyIndex(races);
-			races[emptyIndex] = words.get(index);
+			int emptyIndex = findEmptyIndex(racess);
+			racess[emptyIndex].setTracciato(words.get(index));
 		}
 
 		try {
@@ -81,9 +82,9 @@ public class MBDowntown implements Serializable {
 		}
 	}
 
-	private static int findEmptyIndex(String[] array) {
+	private static int findEmptyIndex(Gara[] array) {
 		for (int i = 0; i < array.length; i++) {
-			if (array[i].equals("")) {
+			if (array[i].getTracciato().equals("")) {
 				return i;
 			}
 		}
@@ -97,6 +98,7 @@ public class MBDowntown implements Serializable {
 
 	public void show() {
 		this.cssClass = "overlay-Show";
+		carMap.clear();
 	}
 
 	public void bossDuel() {
@@ -117,7 +119,7 @@ public class MBDowntown implements Serializable {
 
 	public void race() {
 		boolean vittoria = _race(this.fromWin);
-		if (vittoria == true)
+		if (vittoria)
 			this.countWin++;
 	}
 
@@ -498,6 +500,14 @@ public class MBDowntown implements Serializable {
 
 	public void setCarMap(Map<Double, String> carMap) {
 		this.carMap = carMap;
+	}
+
+	public Gara[] getRacess() {
+		return racess;
+	}
+
+	public void setRacess(Gara[] racess) {
+		this.racess = racess;
 	}
 
 }

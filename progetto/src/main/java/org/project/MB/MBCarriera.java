@@ -31,7 +31,6 @@ public class MBCarriera implements Serializable {
 	private String cssClass;
 	private String carName;
 
-
 	public void choose(int value) {
 		this.cssClass = "overlay-Show";
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -46,7 +45,7 @@ public class MBCarriera implements Serializable {
 				if (car.getNome().equals("Mazda Rx-8")) {
 					this.selectedCar = em.find(Carboncar.class, car.getId());
 					this.carName = "/media/cars/rx8.png";
-					
+
 				}
 			}
 			System.out.println(selectedCar.getNome());
@@ -58,7 +57,7 @@ public class MBCarriera implements Serializable {
 				if (car.getNome().equals("Chevrolet Camaro SS")) {
 					this.selectedCar = em.find(Carboncar.class, car.getId());
 					this.carName = "/media/cars/ccss.png";
-					
+
 				}
 			}
 			System.out.println(selectedCar.getNome());
@@ -70,62 +69,61 @@ public class MBCarriera implements Serializable {
 				if (car.getNome().equals("Alfa Romeo Brera")) {
 					this.selectedCar = em.find(Carboncar.class, car.getId());
 					this.carName = "/media/cars/arb.png";
-					
+
 				}
-				
+
 			}
 			System.out.println(selectedCar.getNome());
 			break;
 		}
 	}
+
 	public void noCarShow() {
 		this.cssClass = "overlay-noShow";
 	}
-	
+
 	public void startCarriera() {
 		ExternalContext externalContext;
-		switch(selectedCar.getNome()) {
+		switch (selectedCar.getNome()) {
 		case "Mazda Rx-8":
-			
+
 			externalContext = FacesContext.getCurrentInstance().getExternalContext();
-			
+
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
-			 try {
-				 externalContext.redirect("http://localhost:8080/progetto/faces/Downtown.xhtml");
-			 }catch(Exception e) {
-				 e.printStackTrace();
-			 }
-			
+			try {
+				externalContext.redirect("http://localhost:8080/progetto/faces/Downtown.xhtml");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			break;
-			
+
 		case "Alfa Romeo Brera":
-			
+
 			externalContext = FacesContext.getCurrentInstance().getExternalContext();
-			
+
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
-			 try {
-				 externalContext.redirect("http://localhost:8080/progetto/faces/Fortuna.xhtml");
-			 }catch(Exception e) {
-				 e.printStackTrace();
-			 }
-			
+			try {
+				externalContext.redirect("http://localhost:8080/progetto/faces/Fortuna.xhtml");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			break;
 		case "Chevrolet Camaro SS":
-			
+
 			externalContext = FacesContext.getCurrentInstance().getExternalContext();
-			
+
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
-			 try {
-				 externalContext.redirect("http://localhost:8080/progetto/faces/Kempton.xhtml");
-			 }catch(Exception e) {
-				 e.printStackTrace();
-			 }
-			
+			try {
+				externalContext.redirect("http://localhost:8080/progetto/faces/Kempton.xhtml");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			break;
 		}
 	}
-	
-
 
 	public Carboncar getSelectedCar() {
 		return selectedCar;
@@ -142,9 +140,11 @@ public class MBCarriera implements Serializable {
 	public void setCssClass(String cssClass) {
 		this.cssClass = cssClass;
 	}
+
 	public String getCarName() {
 		return carName;
 	}
+
 	public void setCarName(String carName) {
 		this.carName = carName;
 	}

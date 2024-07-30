@@ -11,5 +11,6 @@
 		<class>org.project.Entities.Money</class>
 		<class>org.project.Entities.Carbonboss</class>
 		<class>org.project.Entities.Carboncar</class>
+		<class>org.project.Entities.Clienti</class>
 	</persistence-unit>
 </persistence>
