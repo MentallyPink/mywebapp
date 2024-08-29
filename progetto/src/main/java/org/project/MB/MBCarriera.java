@@ -14,10 +14,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.project.Entities.Carboncar;
+import org.project.Storage.Interfaccia;
 
 @ManagedBean
 
-public class MBCarriera implements Serializable {
+public class MBCarriera implements Serializable, Interfaccia {
 
 	/**
 	 * 
@@ -91,7 +92,7 @@ public class MBCarriera implements Serializable {
 
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
 			try {
-				externalContext.redirect("http://localhost:8080/progetto/faces/Downtown.xhtml");
+				externalContext.redirect(localHost + "Downtown.xhtml");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -104,7 +105,7 @@ public class MBCarriera implements Serializable {
 
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
 			try {
-				externalContext.redirect("http://localhost:8080/progetto/faces/Fortuna.xhtml");
+				externalContext.redirect(localHost + "Fortuna.xhtml");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -116,7 +117,7 @@ public class MBCarriera implements Serializable {
 
 			FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getId());
 			try {
-				externalContext.redirect("http://localhost:8080/progetto/faces/Kempton.xhtml");
+				externalContext.redirect(localHost + "Kempton.xhtml");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

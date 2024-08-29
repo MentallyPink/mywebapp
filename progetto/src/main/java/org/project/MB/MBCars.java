@@ -18,9 +18,10 @@ import javax.persistence.criteria.Root;
 
 import org.project.Entities.Carboncar;
 import org.project.Entities.Money;
+import org.project.Storage.Interfaccia;
 
 @ManagedBean
-public class MBCars implements Serializable {
+public class MBCars implements Serializable, Interfaccia {
 
 	/**
 	 * 
@@ -164,7 +165,7 @@ public class MBCars implements Serializable {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		try {
-			externalContext.redirect("http://localhost:8080/progetto/faces/duel.xhtml");
+			externalContext.redirect(localHost + "duel.xhtml");
 
 		} catch (Exception e) {
 
@@ -198,7 +199,7 @@ public class MBCars implements Serializable {
 																				// navigazione tra
 																									// le pagine
 		try {
-			externalContext.redirect("http://localhost:8080/progetto/faces/login.xhtml");// redirect alla mia pagina di
+			externalContext.redirect(localHost + "login.xhtml");// redirect alla mia pagina di
 																							// lista
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -209,7 +210,7 @@ public class MBCars implements Serializable {
 		 _onRefresh();
 		 ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		 try {
-			 externalContext.redirect("http://localhost:8080/progetto/faces/carriera.xhtml");
+			 externalContext.redirect(localHost + "carriera.xhtml");
 		 }catch(Exception e) {
 			 e.printStackTrace();
 		 }

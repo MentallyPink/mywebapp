@@ -13,9 +13,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.project.Entities.User;
+import org.project.Storage.Interfaccia;
 
 @ManagedBean
-public class MBLogin implements Serializable {
+public class MBLogin implements Serializable, Interfaccia{
 
 	/**
 	 * 
@@ -35,7 +36,7 @@ public class MBLogin implements Serializable {
 			if (email.equals(u.getEmail()) && password.equals(u.getPassword())) {
 
 				ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-				externalContext.redirect("http://localhost:8080/progetto/faces/index.xhtml");// redirect alla mia pagina
+				externalContext.redirect(localHost + "index.xhtml");// redirect alla mia pagina
 																								// di lista
 			} else {
 				System.out.println("credenziali sbagliate");
@@ -53,7 +54,7 @@ public class MBLogin implements Serializable {
 																									// l'istanza
 																									// corrente
 		try {
-			externalContext.redirect("http://localhost:8080/progetto/faces/register.xhtml");// redirect alla mia pagina
+			externalContext.redirect(localHost + "register.xhtml");// redirect alla mia pagina
 																							// di lista
 		} catch (Exception e) {
 

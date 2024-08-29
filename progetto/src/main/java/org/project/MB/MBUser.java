@@ -13,9 +13,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.project.Entities.User;
+import org.project.Storage.Interfaccia;
 
 @ManagedBean
-public class MBUser implements Serializable {
+public class MBUser implements Serializable, Interfaccia {
 
 	/**
 	 * 
@@ -73,7 +74,7 @@ public class MBUser implements Serializable {
 		
 		 ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext(); //server per la navigazione tra le pagine
 	        try {
-				externalContext.redirect("http://localhost:8080/progetto/faces/login.xhtml");//redirect alla mia pagina di lista
+				externalContext.redirect(localHost + "login.xhtml");//redirect alla mia pagina di lista
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

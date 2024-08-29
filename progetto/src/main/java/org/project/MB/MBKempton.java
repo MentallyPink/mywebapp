@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
@@ -30,7 +29,6 @@ public class MBKempton implements Serializable {
 	private Carboncar selectedCar;
 	
 	
-	@PostConstruct
 	private void init() {
 		int id = 0;
 		List<String> words = Arrays.asList("drift", "sprint", "circuit");

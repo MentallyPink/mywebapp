@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -20,10 +19,11 @@ import javax.persistence.criteria.Root;
 import org.project.Entities.Carbonboss;
 import org.project.Entities.Carboncar;
 import org.project.Storage.BossCar;
+import org.project.Storage.Interfaccia;
 
 @ManagedBean
 
-public class MBDuel implements Serializable {
+public class MBDuel implements Serializable, Interfaccia {
 
 	/**
 	 * 
@@ -119,7 +119,7 @@ public class MBDuel implements Serializable {
 
 	}
 	
-	@PostConstruct
+	
 	private void init() {
 		int id = 0;
 		try {
@@ -345,7 +345,7 @@ public class MBDuel implements Serializable {
 	public void redirectIndex() {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		try {
-			externalContext.redirect("http://localhost:8080/progetto/faces/index.xhtml");
+			externalContext.redirect(localHost + "index.xhtml");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
@@ -27,6 +26,7 @@ import javax.persistence.criteria.Root;
 import org.project.Entities.Carboncar;
 import org.project.Enum.EnumGenerico;
 import org.project.Storage.Gara;
+
 
 @ManagedBean
 public class MBDowntown implements Serializable {
@@ -56,7 +56,7 @@ public class MBDowntown implements Serializable {
  
 	Map<Double, String> carMap = new LinkedHashMap<>();
 
-	@PostConstruct
+	
 	private void init() {
 		int id = 0;
 		List<String> words = Arrays.asList("drift", "sprint", "circuit");
