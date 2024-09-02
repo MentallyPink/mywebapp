@@ -1,6 +1,7 @@
 package org.project.MB;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -18,6 +19,8 @@ import javax.persistence.criteria.Root;
 
 import org.project.Entities.Carboncar;
 import org.project.Entities.Money;
+import org.project.SQL.SQLNativeBuilder;
+import org.project.SQL.SQLNativeExecutor;
 import org.project.Storage.Interfaccia;
 
 @ManagedBean
@@ -52,20 +55,48 @@ public class MBCars implements Serializable, Interfaccia {
 	private String soldi;
 
 	private Carboncar macchina;
-	
-	@ManagedProperty(value="#{MBDuel}")
+
+	@ManagedProperty(value = "#{MBDuel}")
 	private MBDuel mbduel;
 
 	public List<Carboncar> getAllCars(boolean cercaId) {
 
 		try {
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-			Root<Carboncar> root = criteria.from(Carboncar.class);
+			lista = new ArrayList<Carboncar>();
+			SQLNativeBuilder sql = new SQLNativeBuilder();
+			sql.append("SELECT * FROM carboncars");
+			sql.append("WHERE 1=1");
+
+			SQLNativeExecutor nq = new SQLNativeExecutor(emf.createEntityManager(), sql.toString());
+
+			@SuppressWarnings("unchecked")
+			List<Object[]> resultList = nq.getResultList();
+
+			Number v;
+			for (Object[] record : resultList) {
+				Carboncar car = new Carboncar();
+				car.setClass_((String) record[1]);
+				car.setNome((String) record[2]);
+				car.setPrice((String) record[3]);
+				car.setTier((String) record[4]);
+				v = (Number) record[5];
+				car.setTopSpeed(v.floatValue());
+				v = (Number) record[6];
+				car.setAcceleration(v.floatValue());
+				v = (Number) record[7];
+				car.setHandling(v.floatValue());
+				lista.add(car);
+			}
+//			lista.addAll(resultList);
 			_setRefresh();
-			criteria.select(root);
-			lista = em.createQuery(criteria).getResultList();
-			
+
+//			CriteriaBuilder cb = em.getCriteriaBuilder();
+//			CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
+//			Root<Carboncar> root = criteria.from(Carboncar.class);
+//			_setRefresh();
+//			criteria.select(root);
+//			lista = em.createQuery(criteria).getResultList();
+
 			return lista;
 
 		} catch (Exception e) {
@@ -157,11 +188,11 @@ public class MBCars implements Serializable, Interfaccia {
 
 	public void duel() {
 		this.id = lista.get(0).getId();
-		if(lista == null) {
+		if (lista == null) {
 			this.id = 42;
 		}
 		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", id);
-		
+
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
 		try {
@@ -196,25 +227,26 @@ public class MBCars implements Serializable, Interfaccia {
 		_onRefresh();
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext(); // server per la
 
-																				// navigazione tra
-																									// le pagine
+		// navigazione tra
+		// le pagine
 		try {
 			externalContext.redirect(localHost + "login.xhtml");// redirect alla mia pagina di
-																							// lista
+																// lista
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	 public void carriera() {
-		 _onRefresh();
-		 ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
-		 try {
-			 externalContext.redirect(localHost + "carriera.xhtml");
-		 }catch(Exception e) {
-			 e.printStackTrace();
-		 }
-	 }
+
+	public void carriera() {
+		_onRefresh();
+		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+		try {
+			externalContext.redirect(localHost + "carriera.xhtml");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public Money moneyAmount() {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -223,7 +255,7 @@ public class MBCars implements Serializable, Interfaccia {
 		money = em.createQuery(criteria).getSingleResult();
 		return money;
 	}
-	
+
 	public void showInsert() {
 		this.addCar = !this.addCar;
 	}

@@ -20,7 +20,7 @@
 
 		<f:viewAction action="#{MBCars.moneyForView}" />
 
-
+		<f:viewAction action="#{MBCars.getAllCars(false)}" />
 	</f:metadata>
 
 
@@ -30,8 +30,8 @@
 		<h:form>
 
 			<p:dataTable value="#{MBCars.lista}" var="car" scrollable="true"
-				scrollHeight="275">
-			<!-- 	<p:column>
+				scrollHeight="275" emptyMessage="SOCCIA IL E' VUOTA">
+				<!-- 	<p:column>
 
 					<f:facet name="header">ID</f:facet>
 					<h:outputText value="#{car.id}" />
@@ -107,10 +107,10 @@
 
 		<div class="pannello right">
 			<h:form>
-			<h:commandButton value="Clicca qui per cominciare una carriera"
-					action="#{MBCars.carriera}" styleClass="button "/>
+				<h:commandButton value="Clicca qui per cominciare una carriera"
+					action="#{MBCars.carriera}" styleClass="button " />
 				<h:commandButton value="Duella" action="#{MBCars.duel}"
-					rendered="#{MBCars.singleCar}" styleClass="button"/>
+					rendered="#{MBCars.singleCar}" styleClass="button" />
 				<h:commandButton value="Modifica" action="#{MBCars.showEditCar}"
 					rendered="#{MBCars.singleCar}" styleClass="button" />
 
@@ -120,8 +120,8 @@
 					action="#{MBCars.getAllCars(false)}" styleClass="button " />
 				<h:commandButton value="Back to Login" action="#{MBCars.redirect}"
 					style="float:right" styleClass="button " />
-					<h:commandButton value = "Aggiungi" action = "#{MBCars.showInsert}"
-					styleClass = "button" rendered = "#{MBCars.addCar}"/>
+				<h:commandButton value="Aggiungi" action="#{MBCars.showInsert}"
+					styleClass="button" rendered="#{MBCars.addCar}" />
 				<!-- INIZIO FORM AGGIUNTA MACCHINA -->
 
 				<h:panelGrid columns="2" styleClass="panel-table"

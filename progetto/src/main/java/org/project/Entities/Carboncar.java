@@ -48,7 +48,7 @@ public class Carboncar implements Serializable {
 		return this.acceleration;
 	}
 
-	public void setAcceleration(int acceleration) {
+	public void setAcceleration(float acceleration) {
 		this.acceleration = acceleration;
 	}
 
@@ -64,7 +64,7 @@ public class Carboncar implements Serializable {
 		return this.handling;
 	}
 
-	public void setHandling(int handling) {
+	public void setHandling(float handling) {
 		this.handling = handling;
 	}
 
@@ -96,7 +96,7 @@ public class Carboncar implements Serializable {
 		return this.topSpeed;
 	}
 
-	public void setTopSpeed(int topSpeed) {
+	public void setTopSpeed(float topSpeed) {
 		this.topSpeed = topSpeed;
 	}
 	@Override
