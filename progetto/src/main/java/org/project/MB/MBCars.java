@@ -71,7 +71,7 @@ public class MBCars implements Serializable, Interfaccia {
 
 			@SuppressWarnings("unchecked")
 			List<Object[]> resultList = nq.getResultList();
-
+ 
 			Number v;
 			for (Object[] record : resultList) {
 				Carboncar car = new Carboncar();
