@@ -8,14 +8,14 @@ import javax.persistence.Persistence;
 
 import org.hibernate.query.NativeQuery;
 
-public class SQLNativeExecutor {
+public class NativeQueryExecutor {
 	
 	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("progetto");
 	private EntityManager entityManager = entityManagerFactory.createEntityManager();
 	
 	private String sql;
 	
-	public SQLNativeExecutor(EntityManager em, String sql) {
+	public NativeQueryExecutor(EntityManager em, String sql) {
 		this.entityManager = em;
 		this.sql = sql;
 	}

@@ -26,9 +26,9 @@ public class Carboncar implements Serializable {
 
 	private String nome;
 
-	private String price;
+	private int price;
 
-	private String tier;
+	private int tier;
 
 	@Column(name="top_speed")
 	private float topSpeed;
@@ -76,19 +76,19 @@ public class Carboncar implements Serializable {
 		this.nome = nome;
 	}
 
-	public String getPrice() {
+	public int getPrice() {
 		return this.price;
 	}
 
-	public void setPrice(String price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 
-	public String getTier() {
+	public int getTier() {
 		return this.tier;
 	}
 
-	public void setTier(String tier) {
+	public void setTier(int tier) {
 		this.tier = tier;
 	}
 

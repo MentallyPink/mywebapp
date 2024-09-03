@@ -6,11 +6,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-public class SQLNativeBuilder {
+public class NativeQueryBuilder {
 
 	private StringBuilder sql = new StringBuilder();
-	
-	public SQLNativeBuilder() {
+
+	public NativeQueryBuilder() {
 	}
 
 	public void append(String query) {
@@ -20,8 +20,12 @@ public class SQLNativeBuilder {
 
 	public void append(String query, Object pm) {
 		if (query != null && !query.isEmpty() && pm != null) {
-			query.replaceFirst("?", "'" + pm.toString() + "'");
-			append(query);
+			String queryv2;
+			if (pm instanceof String)
+				queryv2 = query.replaceFirst("\\?", "'" + pm.toString() + "'");
+			else
+				queryv2 = query.replaceFirst("\\?", pm.toString());
+			append(queryv2);
 		}
 
 	}
@@ -40,7 +44,7 @@ public class SQLNativeBuilder {
 			append(query);
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return sql.toString();

@@ -6,14 +6,10 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.project.Entities.Carboncar;
+import org.project.SQL.NativeQueryBuilder;
+import org.project.SQL.NativeQueryExecutor;
 import org.project.Storage.Interfaccia;
 
 @ManagedBean
@@ -25,8 +21,6 @@ public class MBCarriera implements Serializable, Interfaccia {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("progetto");
-	private EntityManager em = entityManagerFactory.createEntityManager();
 
 	private Carboncar selectedCar;
 	private String cssClass;
@@ -34,50 +28,52 @@ public class MBCarriera implements Serializable, Interfaccia {
 
 	public void choose(int value) {
 		this.cssClass = "overlay-Show";
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-		Root<Carboncar> root = criteria.from(Carboncar.class);
-		List<Carboncar> listaMacchine;
-		switch (value) {
+		
+		NativeQueryBuilder sql = new NativeQueryBuilder();
+		sql.append("SELECT * from carboncars");
+		sql.append("WHERE 1=1");
+		switch(value) {
 		case 1:
-			criteria.select(root);
-			listaMacchine = em.createQuery(criteria).getResultList();
-			for (Carboncar car : listaMacchine) {
-				if (car.getNome().equals("Mazda Rx-8")) {
-					this.selectedCar = em.find(Carboncar.class, car.getId());
-					this.carName = "/media/cars/rx8.png";
-
-				}
-			}
-			System.out.println(selectedCar.getNome());
+			sql.append("AND nome = 'Mazda Rx-8'");
+			this.carName = "/media/cars/rx8.png";
 			break;
 		case 2:
-			criteria.select(root);
-			listaMacchine = em.createQuery(criteria).getResultList();
-			for (Carboncar car : listaMacchine) {
-				if (car.getNome().equals("Chevrolet Camaro SS")) {
-					this.selectedCar = em.find(Carboncar.class, car.getId());
-					this.carName = "/media/cars/ccss.png";
-
-				}
-			}
-			System.out.println(selectedCar.getNome());
+			sql.append("AND nome = 'Chevrolet Camaro SS'");
+			this.carName = "/media/cars/ccss.png";
 			break;
 		case 3:
-			criteria.select(root);
-			listaMacchine = em.createQuery(criteria).getResultList();
-			for (Carboncar car : listaMacchine) {
-				if (car.getNome().equals("Alfa Romeo Brera")) {
-					this.selectedCar = em.find(Carboncar.class, car.getId());
-					this.carName = "/media/cars/arb.png";
-
-				}
-
-			}
-			System.out.println(selectedCar.getNome());
+			sql.append("AND nome = 'Alfa Romeo Brera'");
+			this.carName = "/media/cars/arb.png";
 			break;
 		}
-	}
+		NativeQueryExecutor nq = new NativeQueryExecutor(emf.createEntityManager(), sql.toString());
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> resultList = nq.getResultList();
+		
+		Number v;
+		Carboncar car = new Carboncar();
+		for (Object[] record : resultList) {
+			v = (Number) record[0];
+			car.setId(v.intValue());
+			car.setClass_((String) record[1]);
+			car.setNome((String) record[2]);
+			v = (Number) record[3];
+			car.setPrice(v.intValue());
+			v = (Number) record[4];
+			car.setTier(v.intValue());
+			v = (Number) record[5];
+			car.setTopSpeed(v.floatValue());
+			v = (Number) record[6];
+			car.setAcceleration(v.floatValue());
+			v = (Number) record[7];
+			car.setHandling(v.floatValue());
+		}
+		selectedCar = car;
+			System.out.println(selectedCar.getNome());
+			
+		}
+	
 
 	public void noCarShow() {
 		this.cssClass = "overlay-noShow";

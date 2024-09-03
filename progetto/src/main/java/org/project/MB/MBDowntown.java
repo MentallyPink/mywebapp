@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,11 +12,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -25,19 +20,20 @@ import javax.persistence.criteria.Root;
 
 import org.project.Entities.Carboncar;
 import org.project.Enum.EnumGenerico;
+import org.project.SQL.NativeQueryBuilder;
+import org.project.SQL.NativeQueryExecutor;
 import org.project.Storage.Gara;
+import org.project.Storage.Interfaccia;
 
 
 @ManagedBean
-public class MBDowntown implements Serializable {
+public class MBDowntown implements Serializable, Interfaccia {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("progetto");
-	private EntityManager em = entityManagerFactory.createEntityManager();
 
 	private Carboncar selectedCar;
 	private String cssClass;
@@ -57,7 +53,7 @@ public class MBDowntown implements Serializable {
 	Map<Double, String> carMap = new LinkedHashMap<>();
 
 	
-	private void init() {
+	public void init() {
 		int id = 0;
 		List<String> words = Arrays.asList("drift", "sprint", "circuit");
 
@@ -75,10 +71,10 @@ public class MBDowntown implements Serializable {
 
 		try {
 			id = (int) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("id");
-			selectedCar = em.find(Carboncar.class, id);
+			selectedCar = emf.createEntityManager().find(Carboncar.class, id);
 		} catch (Exception e) {
 			id = 42;
-			selectedCar = em.find(Carboncar.class, id);
+			selectedCar = emf.createEntityManager().find(Carboncar.class, id);
 		}
 	}
 
@@ -102,12 +98,42 @@ public class MBDowntown implements Serializable {
 	}
 
 	public void bossDuel() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-		Root<Carboncar> root = criteria.from(Carboncar.class);
+		
+		
+		NativeQueryBuilder sql = new NativeQueryBuilder();
+		sql.append("SELECT * FROM carboncars");
+		sql.append("WHERE 1=1");
+		sql.append("AND nome = 'Mazda RX-7'");
+		NativeQueryExecutor nq = new NativeQueryExecutor(emf.createEntityManager(), sql.toString());
+		
+		@SuppressWarnings("unchecked")
+		List<Object[]> resultList = nq.getResultList();
+		
+		Number v;
 		Carboncar enemyCar = new Carboncar();
-		criteria.select(root).where(cb.equal(root.get("nome"), "Mazda RX-7"));
-		enemyCar = em.createQuery(criteria).getSingleResult();
+		for (Object[] record : resultList) {
+			v = (Number) record[0];
+			enemyCar.setId(v.intValue());
+			enemyCar.setClass_((String) record[1]);
+			enemyCar.setNome((String) record[2]);
+			v = (Number) record[3];
+			enemyCar.setPrice(v.intValue());
+			v = (Number) record[4];
+			enemyCar.setTier(v.intValue());
+			v = (Number) record[5];
+			enemyCar.setTopSpeed(v.floatValue());
+			v = (Number) record[6];
+			enemyCar.setAcceleration(v.floatValue());
+			v = (Number) record[7];
+			enemyCar.setHandling(v.floatValue());
+		}
+		
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
+//		Root<Carboncar> root = criteria.from(Carboncar.class);
+//		Carboncar enemyCar = new Carboncar();
+//		criteria.select(root).where(cb.equal(root.get("nome"), "Mazda RX-7"));
+//		enemyCar = em.createQuery(criteria).getSingleResult();
 		double winProb = _duel(selectedCar, enemyCar);
 		if (winProb >= 50.0) {
 			this.win = "Vittoria!";

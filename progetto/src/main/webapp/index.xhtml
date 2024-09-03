@@ -16,18 +16,14 @@
 	<link rel="stylesheet" type="text/css" href="style.css" />
 	<f:metadata>
 
-		<f:viewAction action="#{MBCars.moneyAmount}" />
-
-		<f:viewAction action="#{MBCars.moneyForView}" />
-
-		<f:viewAction action="#{MBCars.getAllCars(false)}" />
+		<f:viewAction action="#{MBCars.init}" />
 	</f:metadata>
 
 
 	<!-- INIZIO TABELLA DIV ALTO DX -->
 	<div class="box top">
 
-		<h:form>
+		<h:form id="form">
 
 			<p:dataTable value="#{MBCars.lista}" var="car" scrollable="true"
 				scrollHeight="275" emptyMessage="SOCCIA IL E' VUOTA">
@@ -52,18 +48,18 @@
 					<f:facet name="header">Valore ($)</f:facet>
 					<h:outputText value="#{car.price}" />
 				</p:column>
-				<!-- <p:column>
-					<f:facet name="header">Velocita' massima</f:facet>
-					<h:outputText value="#{car.topSpeed}" />
-				</p:column>
 				<p:column>
-					<f:facet name="header">Accelerazione</f:facet>
-					<h:outputText value="#{car.acceleration}" />
+					<h:commandButton value="Select" styleClass="button">
+						<f:setPropertyActionListener value="#{car}"
+							target="#{MBCars.macchina}" />
+					</h:commandButton>
+
+					<h:commandButton value="Modifica" action="#{MBCars.showEditCar}"
+						rendered="#{MBCars.singleCar}" styleClass="button" />
+
+					<h:commandButton value="Elimina" action="#{MBCars.deleteCar}"
+						rendered="#{MBCars.singleCar}" styleClass="button " />
 				</p:column>
-				<p:column>
-					<f:facet name="header">Manovrabilita'</f:facet>
-					<h:outputText value="#{car.handling}" />
-				</p:column> -->
 			</p:dataTable>
 		</h:form>
 	</div>
@@ -78,22 +74,25 @@
 				<h:panelGrid columns="2" styleClass="panel-table">
 					<h:outputLabel for="nomefiltr" value="Cerca per Nome"
 						styleClass="labelFilter" />
-					<h:inputText id="nomefiltr" value="#{MBCars.nomeFiltro}"
+					<h:inputText id="nomefiltr" value="#{MBCars.filter.nome}"
 						label="nome" styleClass="inputBox" />
 					<h:outputLabel for="classefiltr" value="Cerca per Classe"
 						styleClass="labelFilter" />
-					<h:inputText id="classefiltr" value="#{MBCars.classeFiltro}"
-						label="classe" styleClass="inputBox" />
+					<h:selectOneMenu id="classefiltr" value="#{MBCars.filter.classe}"
+						label="classe" styleClass="inputBox">
+							<f:selectItems value = "#{MBCars.carClasses}" var = "classe"
+							itemLabel = "#{classe.codice}" itemValue = "#{classe}"/>
+						</h:selectOneMenu>
 					<h:outputLabel for="tierfiltr" value="Cerca per Tier"
 						styleClass="labelFilter" />
-					<h:inputText id="tierfiltr" value="#{MBCars.tierFiltro}"
+					<h:inputText id="tierfiltr" value="#{MBCars.filter.tier}"
 						label="tier" styleClass="inputBox" />
 					<h:outputLabel for="prezzofiltr" value="Cerca per Prezzo"
 						styleClass="labelFilter" />
-					<h:inputText id="prezzofiltr" value="#{MBCars.priceFiltro}"
+					<h:inputText id="prezzofiltr" value="#{MBCars.filter.prezzo}"
 						label="prezzo" styleClass="inputBox" />
 				</h:panelGrid>
-				<h:commandButton value="cerca" action="#{MBCars.ricercaConFiltri}"
+				<h:commandButton value="cerca" action="#{MBCars.getFilteredCars}"
 					styleClass="button filter" />
 			</h:form>
 		</div>
@@ -111,15 +110,11 @@
 					action="#{MBCars.carriera}" styleClass="button " />
 				<h:commandButton value="Duella" action="#{MBCars.duel}"
 					rendered="#{MBCars.singleCar}" styleClass="button" />
-				<h:commandButton value="Modifica" action="#{MBCars.showEditCar}"
-					rendered="#{MBCars.singleCar}" styleClass="button" />
 
-				<h:commandButton value="Elimina" action="#{MBCars.deleteCar}"
-					rendered="#{MBCars.singleCar}" styleClass="button " />
 				<h:commandButton value="Refresh"
-					action="#{MBCars.getAllCars(false)}" styleClass="button " />
+					action="#{MBCars.getUnfilteredCars}" styleClass="button " />
 				<h:commandButton value="Back to Login" action="#{MBCars.redirect}"
-					style="float:right" styleClass="button " />
+					style="float:right" styleClass="button " />	
 				<h:commandButton value="Aggiungi" action="#{MBCars.showInsert}"
 					styleClass="button" rendered="#{MBCars.addCar}" />
 				<!-- INIZIO FORM AGGIUNTA MACCHINA -->
@@ -128,19 +123,22 @@
 					rendered="#{MBCars.addCar}">
 					<h:outputLabel for="carAddNome" value="Nome"
 						styleClass="labelFilter" />
-					<h:inputText id="carAddNome" value="#{MBCars.nome}"
+					<h:inputText id="carAddNome" value="#{MBCars.macchina.nome}"
 						styleClass="inputBox" />
 					<h:outputLabel for="carAddClass" value="Classe"
 						styleClass="labelFilter" />
-					<h:inputText id="carAddClasse" value="#{MBCars.classe}"
-						styleClass="inputBox" />
+					<h:selectOneMenu id="carAddClass" value="#{MBCars.macchina.class_}"
+						label="classe" styleClass="inputBox">
+							<f:selectItems value = "#{MBCars.carClasses}" var = "classe"
+							itemLabel = "#{classe.codice}" itemValue = "#{classe.codice}"/>
+						</h:selectOneMenu>
 					<h:outputLabel for="carAddTier" value="Tier"
 						styleClass="labelFilter" />
-					<h:inputText id="carAddTier" value="#{MBCars.tier}"
+					<h:inputText id="carAddTier" value="#{MBCars.macchina.tier}"
 						styleClass="inputBox" />
 					<h:outputLabel for="carAddPrice" value="Valore ($)"
 						styleClass="labelFilter" />
-					<h:inputText id="carAddPrice" value="#{MBCars.price}"
+					<h:inputText id="carAddPrice" value="#{MBCars.macchina.price}"
 						styleClass="inputBox" />
 				</h:panelGrid>
 				<h:commandButton value="Aggiungi" action="#{MBCars.addCar}"
@@ -153,19 +151,22 @@
 					rendered="#{MBCars.editCar}">
 					<h:outputLabel for="carEditNome" value="Nome"
 						styleClass="labelFilter" />
-					<h:inputText id="carEditNome" value="#{MBCars.nome}"
+					<h:inputText id="carEditNome" value="#{MBCars.macchina.nome}"
 						styleClass="inputBox" />
 					<h:outputLabel for="carEditClass" value="Classe"
 						styleClass="labelFilter" />
-					<h:inputText id="carEditClasse" value="#{MBCars.classe}"
-						styleClass="inputBox" />
+					<h:selectOneMenu id="carEditClass" value="#{MBCars.macchina.class_}"
+						label="classe" styleClass="inputBox">
+							<f:selectItems value = "#{MBCars.carClasses}" var = "classe"
+							itemLabel = "#{classe.codice}" itemValue = "#{classe.codice}"/>
+						</h:selectOneMenu>
 					<h:outputLabel for="carEditTier" value="Tier"
 						styleClass="labelFilter" />
-					<h:inputText id="carEditTier" value="#{MBCars.tier}"
+					<h:inputText id="carEditTier" value="#{MBCars.macchina.tier}"
 						styleClass="inputBox" />
 					<h:outputLabel for="carEditPrice" value="Valore ($)"
 						styleClass="labelFilter" />
-					<h:inputText id="carEditPrice" value="#{MBCars.price}"
+					<h:inputText id="carEditPrice" value="#{MBCars.macchina.price}"
 						styleClass="inputBox" />
 				</h:panelGrid>
 				<h:commandButton value="Modifica" action="#{MBCars.updateCar}"
@@ -177,7 +178,6 @@
 		</div>
 	</div>
 	<!-- FINE SEZIONE UTILIZZO DATI DIV BASSO DX -->
-
 </h:body>
 
 </html>
