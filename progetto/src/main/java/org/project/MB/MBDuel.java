@@ -2,23 +2,17 @@ package org.project.MB;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-import org.project.Entities.Carbonboss;
-import org.project.Entities.Carboncar;
-import org.project.Storage.BossCar;
+import org.project.EJB.EJBCars;
+import org.project.Storage.CompositeBoss;
+import org.project.Storage.CompositeCar;
+import org.project.Storage.FilterCar;
 import org.project.Storage.Interfaccia;
 
 @ManagedBean
@@ -29,9 +23,8 @@ public class MBDuel implements Serializable, Interfaccia {
 	 * 
 	 */
 	private static final long serialVersionUID = -4134813339541327242L;
-
-	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("progetto");
-	private EntityManager em = entityManagerFactory.createEntityManager();
+	
+	private EJBCars ejbCars;
 
 	private int id;
 
@@ -44,133 +37,91 @@ public class MBDuel implements Serializable, Interfaccia {
 	private String race;
 	private String win;
 
-	private Carbonboss boss;
-	private Carboncar macchinaScelta;
-	private Carboncar enemyCar;
-	
+	private CompositeBoss boss;
+	private CompositeCar macchinaScelta;
+	private CompositeCar enemyCar;
+
 	public void showPopUp(String number) {
 		this.cssClass = "overlay-Show";
+		String nome = "";
 
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Carbonboss> criteria = cb.createQuery(Carbonboss.class);
-		Root<Carbonboss> root = criteria.from(Carbonboss.class);
-
+		this.visible = true;
 		switch (number) {
 		case "1":
-			System.out.println("ci arriva  1 wooo");
-			this.visible = true;
 			this.image_info = "/media/introBoss/kenji.gif";
-			criteria.select(root).where(cb.equal(root.get("nome"), "Kenji"));
-			boss = em.createQuery(criteria).getSingleResult();
+			nome = "Kenji";
 			break;
 		case "2":
-			System.out.println("ci arriva  2 wooo");
-			this.visible = true;
 			this.image_info = "/media/introBoss/angie.gif";
-			criteria.select(root).where(cb.equal(root.get("nome"), "Angie"));
-			boss = em.createQuery(criteria).getSingleResult();
+			nome = "Angie";
 			break;
 		case "3":
-			System.out.println("ci arriva  3 wooo");
-			this.visible = true;
 			this.image_info = "/media/introBoss/wolf.gif";
-			criteria.select(root).where(cb.equal(root.get("nome"), "Wolf"));
-			boss = em.createQuery(criteria).getSingleResult();
+			nome = "Wolf";
 			break;
 		case "4":
-			System.out.println("ci arriva  4 wooo");
-			this.visible = true;
 			this.image_info = "/media/introBoss/darius.gif";
-			criteria.select(root).where(cb.equal(root.get("nome"), "Darius"));
-			boss = em.createQuery(criteria).getSingleResult();
+			nome = "Darius";
 			break;
 		}
+		
+		boss = ejbCars.findBoss(nome);
+
 	}
 
 	public void invisible() {
 		this.cssClass = "overlay-noShow";
 	}
+
 	public void exitScore() {
 		this.raceCss = "overlay-noShow";
 	}
 
 	public void duel() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-		Root<Carboncar> root = criteria.from(Carboncar.class);
-		criteria.select(root).where(cb.like(root.get("nome"), "%" + boss.getMacchina() + "%"));
-		this.enemyCar = em.createQuery(criteria).getSingleResult();
-		BossCar bosscar = new BossCar();
-		bosscar.setBoss(this.boss);
-		bosscar.setMacchina(this.enemyCar);
+
 		invisible();
 		this.raceCss = "overlay-Show";
-		System.out.println("La mia auto: " + macchinaScelta.toString());
-		System.out.println("La loro auto: " + bosscar.getMacchina().toString());
-		double winProb = _duel(macchinaScelta, bosscar.getMacchina());
-		System.out.println(" Percentuale vittoria: " + winProb);
+		double winProb = _duel(macchinaScelta, boss.getCar());
 
 		if (winProb >= 65.0) {
 			this.win = "Vittoria!";
-			System.out.println("hai vinto");
 		} else
 			this.win = "Sconfitta..";
-			System.out.println("hai perso");
 
 	}
-	
-	
-	private void init() {
+
+	public void init() {
 		int id = 0;
+		ejbCars = new EJBCars();
 		try {
 			id = (int) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("id");
-			macchinaScelta = em.find(Carboncar.class, id);
-			carToView = macchinaScelta.toString();
-		}catch(Exception e) {
+			macchinaScelta = ejbCars.findCarById(id);
+			carToView = macchinaScelta.getNome();
+		} catch (Exception e) {
 			id = 42;
-			macchinaScelta = em.find(Carboncar.class, id);
-			carToView = macchinaScelta.toString();
+			macchinaScelta = ejbCars.findCarById(id);
+			carToView = macchinaScelta.getNome();
 		}
 	}
 
 	public void randomDuel() {
-		// voglio fare drift, sprint race, circuito
-		// rispettivamente tuner, muscle, exotic hanno vantaggio
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-		Root<Carboncar> root = criteria.from(Carboncar.class);
-		List<Integer> listaIdCars = new ArrayList<>();
-		List<Carboncar> listaCars;
-		criteria.select(root);
-		listaCars = em.createQuery(criteria).getResultList();
+		List<CompositeCar> listaCars = ejbCars.getCarList(new FilterCar());
 		this.raceCss = "overlay-Show";
-		for (Carboncar macchina : listaCars) {
-			listaIdCars.add(macchina.getId());
-		}
 		Random random = new Random();
-		int randomindex = random.nextInt(listaIdCars.size());
-		int randomcarId = listaIdCars.get(randomindex);
-		this.enemyCar = em.find(Carboncar.class, randomcarId);
-		System.out.println("La mia auto" + macchinaScelta.toString());
-		System.out.println("La loro auto" + enemyCar.toString());
+		enemyCar = listaCars.get(random.nextInt(listaCars.size()));
 		double winProb = _duel(macchinaScelta, enemyCar);
-		
-		System.out.println(" Percentuale vittoria: " + winProb);
-
 		if (winProb >= 65.0) {
 			this.win = "Vittoria!";
-			System.out.println("hai vinto");
 		} else
 			this.win = "Sconfitta..";
-			System.out.println("hai perso");
 	}
 
-	private double _duel(Carboncar mycar, Carboncar bosscar) {
+	private double _duel(CompositeCar mycar, CompositeCar bosscar) {
 
 		double probVittoria;
 		int differenza;
 //		prima controllo se le macchina sono identiche
-		if (mycar == bosscar) {
+		if (mycar == bosscar) { //fai classe GameUtils, all'interno fai metodo di controllo macchina vs macchina
 //			sono identiche
 			Random random = new Random();
 			int win = random.nextInt(2);
@@ -182,21 +133,21 @@ public class MBDuel implements Serializable, Interfaccia {
 				this.race = "sprint";
 			if (gara == 2)
 				this.race = "circuit";
-			
+
 			if (win == 0) {
 				probVittoria = 0;
 				this.score = String.format("%.2f", probVittoria);
 			}
-				
+
 			else {
 				probVittoria = 100;
 				this.score = String.format("%.2f", probVittoria);
 			}
-				return probVittoria;
-		} else if (Integer.parseInt(mycar.getTier()) != Integer.parseInt(bosscar.getTier())) {
+			return probVittoria;
+		} else if (mycar.getTier() != bosscar.getTier()) {
 			// qui abbiamo tier diversi, va calcolata prob vittoria
-			if (Integer.parseInt(mycar.getTier()) > Integer.parseInt(bosscar.getTier())) {
-				differenza = Integer.parseInt(mycar.getTier()) - Integer.parseInt(bosscar.getTier());
+			if (mycar.getTier() > bosscar.getTier()) {
+				differenza = mycar.getTier() - bosscar.getTier();
 				if (differenza == 1) {
 					probVittoria = _calcolaProbWin(differenza, true, true, mycar, bosscar);
 					this.score = String.format("%.2f", probVittoria);
@@ -211,7 +162,7 @@ public class MBDuel implements Serializable, Interfaccia {
 				}
 
 			} else {
-				differenza = Integer.parseInt(bosscar.getTier()) - Integer.parseInt(mycar.getTier());
+				differenza = bosscar.getTier() - mycar.getTier();
 				if (differenza == 1) {
 					probVittoria = _calcolaProbWin(differenza, true, false, mycar, bosscar);
 					this.score = String.format("%.2f", probVittoria);
@@ -236,8 +187,8 @@ public class MBDuel implements Serializable, Interfaccia {
 
 	}
 
-	private double _calcolaProbWin(int differenza, boolean diverse, boolean vantaggio, Carboncar mycar,
-			Carboncar enemyCar) {
+	private double _calcolaProbWin(int differenza, boolean diverse, boolean vantaggio, CompositeCar mycar,
+			CompositeCar bosscar) {
 		double[] moltiplicatori;
 		Random random = new Random();
 		int gara = random.nextInt(3);
@@ -255,9 +206,9 @@ public class MBDuel implements Serializable, Interfaccia {
 				moltiplicatori = _calcolaMoltiplicatori(this.race);
 				double myScore = (mycar.getTopSpeed() * moltiplicatori[0] + mycar.getAcceleration() * moltiplicatori[1]
 						+ mycar.getHandling() * moltiplicatori[2]) + differenza * 10;
-				double enemyScore = (enemyCar.getTopSpeed() * moltiplicatori[0]
-						+ enemyCar.getAcceleration() * moltiplicatori[1] + enemyCar.getHandling() * moltiplicatori[2]);
-				double winProb = (myScore / (myScore + enemyScore)) *100;
+				double enemyScore = (bosscar.getTopSpeed() * moltiplicatori[0]
+						+ bosscar.getAcceleration() * moltiplicatori[1] + bosscar.getHandling() * moltiplicatori[2]);
+				double winProb = (myScore / (myScore + enemyScore)) * 100;
 				int enemyschianto = random.nextInt(10);
 				if (enemyschianto == 9) {
 					winProb += 20;
@@ -270,28 +221,29 @@ public class MBDuel implements Serializable, Interfaccia {
 					winProb = 100;
 				return winProb;
 			} else {
-					moltiplicatori = _calcolaMoltiplicatori(this.race);
-					double myScore = (mycar.getTopSpeed() * moltiplicatori[0] + mycar.getAcceleration() * moltiplicatori[1]
-							+ mycar.getHandling() * moltiplicatori[2]);
-					double enemyScore = (enemyCar.getTopSpeed() * moltiplicatori[0]
-							+ enemyCar.getAcceleration() * moltiplicatori[1] + enemyCar.getHandling() * moltiplicatori[2])+ differenza * 10;
-					double winProb = (myScore / (myScore + enemyScore)) *100;
-					int enemyschianto = random.nextInt(10);
-					if (enemyschianto == 9) {
-						winProb += 20;
-					}
-					int myschianto = random.nextInt(10);
-					if (myschianto == 9) {
-						winProb -= 20;
-					}
-					if (winProb > 100)
-						winProb = 100;
-					return winProb;
+				moltiplicatori = _calcolaMoltiplicatori(this.race);
+				double myScore = (mycar.getTopSpeed() * moltiplicatori[0] + mycar.getAcceleration() * moltiplicatori[1]
+						+ mycar.getHandling() * moltiplicatori[2]);
+				double enemyScore = (bosscar.getTopSpeed() * moltiplicatori[0]
+						+ bosscar.getAcceleration() * moltiplicatori[1] + bosscar.getHandling() * moltiplicatori[2])
+						+ differenza * 10;
+				double winProb = (myScore / (myScore + enemyScore)) * 100;
+				int enemyschianto = random.nextInt(10);
+				if (enemyschianto == 9) {
+					winProb += 20;
+				}
+				int myschianto = random.nextInt(10);
+				if (myschianto == 9) {
+					winProb -= 20;
+				}
+				if (winProb > 100)
+					winProb = 100;
+				return winProb;
 			}
 		} else {
 			double myScore = (mycar.getTopSpeed() * 0.3 + mycar.getAcceleration() * 0.4 + mycar.getHandling() * 0.3);
-			double bossScore = (enemyCar.getTopSpeed() * 0.3 + enemyCar.getAcceleration() * 0.4
-					+ enemyCar.getHandling() * 0.3);
+			double bossScore = (bosscar.getTopSpeed() * 0.3 + bosscar.getAcceleration() * 0.4
+					+ bosscar.getHandling() * 0.3);
 			double winProb = (myScore / (myScore + bossScore)) * 100;
 			int enemyschianto = random.nextInt(10);
 			if (enemyschianto == 9) {
@@ -341,7 +293,7 @@ public class MBDuel implements Serializable, Interfaccia {
 
 		return moltiplicatori;
 	}
-	
+
 	public void redirectIndex() {
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 		try {
@@ -349,7 +301,7 @@ public class MBDuel implements Serializable, Interfaccia {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}// redirect alla mia pagina
+		} // redirect alla mia pagina
 	}
 
 	public boolean isVisible() {
@@ -376,19 +328,19 @@ public class MBDuel implements Serializable, Interfaccia {
 		this.image_info = image_info;
 	}
 
-	public Carbonboss getBoss() {
+	public CompositeBoss getBoss() {
 		return boss;
 	}
 
-	public void setBoss(Carbonboss boss) {
+	public void setBoss(CompositeBoss boss) {
 		this.boss = boss;
 	}
 
-	public Carboncar getMacchinaScelta() {
+	public CompositeCar getMacchinaScelta() {
 		return macchinaScelta;
 	}
 
-	public void setMacchinaScelta(Carboncar macchina) {
+	public void setMacchinaScelta(CompositeCar macchina) {
 		this.macchinaScelta = macchina;
 	}
 
@@ -440,11 +392,11 @@ public class MBDuel implements Serializable, Interfaccia {
 		this.win = win;
 	}
 
-	public Carboncar getEnemyCar() {
+	public CompositeCar getEnemyCar() {
 		return enemyCar;
 	}
 
-	public void setEnemyCar(Carboncar enemyCar) {
+	public void setEnemyCar(CompositeCar enemyCar) {
 		this.enemyCar = enemyCar;
 	}
 

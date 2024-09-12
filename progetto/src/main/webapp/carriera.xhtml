@@ -14,6 +14,7 @@
 
 	<f:metadata>
 		<f:viewAction action="#{MBCarriera.noCarShow}" />
+		<f:viewAction action="#{MBCarriera.init}" />
 	</f:metadata>
 
 	<h:form>
@@ -33,7 +34,7 @@
 
 						<p:column>
 							<f:facet name="header">Macchina</f:facet>
-							<h:outputText value="#{car.class_}" />
+							<h:outputText value="#{car.classe}" />
 						</p:column>
 
 						<p:column>

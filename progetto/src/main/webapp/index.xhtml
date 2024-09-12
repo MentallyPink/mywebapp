@@ -38,7 +38,7 @@
 				</p:column>
 				<p:column>
 					<f:facet name="header">Classe</f:facet>
-					<h:outputText value="#{car.class_}" />
+					<h:outputText value="#{car.classe}" />
 				</p:column>
 				<p:column>
 					<f:facet name="header">Tier</f:facet>
@@ -49,7 +49,7 @@
 					<h:outputText value="#{car.price}" />
 				</p:column>
 				<p:column>
-					<h:commandButton value="Select" styleClass="button">
+					<h:commandButton value="Select" styleClass="button" rendered = "#{!MBCars.addCar}">
 						<f:setPropertyActionListener value="#{car}"
 							target="#{MBCars.macchina}" />
 					</h:commandButton>
@@ -86,7 +86,7 @@
 					<h:outputLabel for="tierfiltr" value="Cerca per Tier"
 						styleClass="labelFilter" />
 					<h:inputText id="tierfiltr" value="#{MBCars.filter.tier}"
-						label="tier" styleClass="inputBox" />
+						label="tier" styleClass="inputBox" onkeypress="if( (event.which &lt; 48 || event.which &gt; 57) ) return false;"/>
 					<h:outputLabel for="prezzofiltr" value="Cerca per Prezzo"
 						styleClass="labelFilter" />
 					<h:inputText id="prezzofiltr" value="#{MBCars.filter.prezzo}"
@@ -116,7 +116,7 @@
 				<h:commandButton value="Back to Login" action="#{MBCars.redirect}"
 					style="float:right" styleClass="button " />	
 				<h:commandButton value="Aggiungi" action="#{MBCars.showInsert}"
-					styleClass="button" rendered="#{MBCars.addCar}" />
+					styleClass="button" />
 				<!-- INIZIO FORM AGGIUNTA MACCHINA -->
 
 				<h:panelGrid columns="2" styleClass="panel-table"
@@ -127,7 +127,7 @@
 						styleClass="inputBox" />
 					<h:outputLabel for="carAddClass" value="Classe"
 						styleClass="labelFilter" />
-					<h:selectOneMenu id="carAddClass" value="#{MBCars.macchina.class_}"
+					<h:selectOneMenu id="carAddClass" value="#{MBCars.macchina.classe}"
 						label="classe" styleClass="inputBox">
 							<f:selectItems value = "#{MBCars.carClasses}" var = "classe"
 							itemLabel = "#{classe.codice}" itemValue = "#{classe.codice}"/>
@@ -135,7 +135,7 @@
 					<h:outputLabel for="carAddTier" value="Tier"
 						styleClass="labelFilter" />
 					<h:inputText id="carAddTier" value="#{MBCars.macchina.tier}"
-						styleClass="inputBox" />
+						styleClass="inputBox" onkeypress="if( (event.which &lt; 48 || event.which &gt; 57) ) return false;"/>
 					<h:outputLabel for="carAddPrice" value="Valore ($)"
 						styleClass="labelFilter" />
 					<h:inputText id="carAddPrice" value="#{MBCars.macchina.price}"
@@ -155,7 +155,7 @@
 						styleClass="inputBox" />
 					<h:outputLabel for="carEditClass" value="Classe"
 						styleClass="labelFilter" />
-					<h:selectOneMenu id="carEditClass" value="#{MBCars.macchina.class_}"
+					<h:selectOneMenu id="carEditClass" value="#{MBCars.macchina.classe}"
 						label="classe" styleClass="inputBox">
 							<f:selectItems value = "#{MBCars.carClasses}" var = "classe"
 							itemLabel = "#{classe.codice}" itemValue = "#{classe.codice}"/>
@@ -163,7 +163,7 @@
 					<h:outputLabel for="carEditTier" value="Tier"
 						styleClass="labelFilter" />
 					<h:inputText id="carEditTier" value="#{MBCars.macchina.tier}"
-						styleClass="inputBox" />
+						styleClass="inputBox" onkeypress="if( (event.which &lt; 48 || event.which &gt; 57) ) return false;"/>
 					<h:outputLabel for="carEditPrice" value="Valore ($)"
 						styleClass="labelFilter" />
 					<h:inputText id="carEditPrice" value="#{MBCars.macchina.price}"

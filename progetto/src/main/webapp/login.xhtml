@@ -12,7 +12,7 @@
 </h:head>
 <h:body>
 	<f:metadata>
-		<f:viewAction action = "#{MBLogin.onRedirect}"/>
+		<f:viewAction action = "#{MBLogin.init}"/>
 	</f:metadata>
 	<h:form id="form">
 
@@ -23,7 +23,7 @@
 						<div align="center">
 							<h:outputLabel for="email" value="Email: " styleClass="formLabel" />
 						</div>
-						<h:inputText id="email" value="#{MBLogin.email}" required="true"
+						<h:inputText id="email" value="#{MBLogin.filter.email}" required="true"
 							requiredMessage="Email richiesta!" styleClass="inputBox" />
 						<h:message for="email" styleClass="invalid-message" />
 					</h:column>
@@ -33,7 +33,7 @@
 							<h:outputLabel for="password" value="Password: "
 								styleClass="formLabel" />
 						</div>
-						<h:inputSecret id="password" value="#{MBLogin.password}"
+						<h:inputSecret id="password" value="#{MBLogin.filter.password}"
 							required="true" requiredMessage="Password richiesta!"
 							styleClass="inputBox" />
 

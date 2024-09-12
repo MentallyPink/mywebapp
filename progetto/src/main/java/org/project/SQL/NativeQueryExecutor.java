@@ -25,4 +25,17 @@ public class NativeQueryExecutor {
 		NativeQuery nq = (NativeQuery) entityManager.createNativeQuery(sql);
 		return nq.getResultList();
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public List getResultList(Class classe) {
+		NativeQuery nq = (NativeQuery) entityManager.createNativeQuery(sql, classe);
+		return nq.getResultList();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public Object getSingleResult(Class classe) {
+		NativeQuery nq = (NativeQuery) entityManager.createNativeQuery(sql, classe);
+		return nq.getSingleResult();
+	}
+
 }

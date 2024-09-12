@@ -2,10 +2,6 @@ package org.project.SQL;
 
 import java.util.Collection;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 public class NativeQueryBuilder {
 
 	private StringBuilder sql = new StringBuilder();

@@ -2,9 +2,7 @@ package org.project.MB;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
@@ -29,7 +27,7 @@ public class MBKempton implements Serializable {
 	private Carboncar selectedCar;
 	
 	
-	private void init() {
+	public void init() {
 		int id = 0;
 		List<String> words = Arrays.asList("drift", "sprint", "circuit");
 		for (int i = 0; i < races.length; i++) {

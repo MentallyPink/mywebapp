@@ -7,13 +7,10 @@ import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
-import org.project.Entities.Carboncar;
+import org.project.EJB.EJBCars;
 import org.project.Enum.EnumGenerico.CarClass;
-import org.project.SQL.NativeQueryBuilder;
-import org.project.SQL.NativeQueryExecutor;
+import org.project.Storage.CompositeCar;
 import org.project.Storage.FilterCar;
 import org.project.Storage.Interfaccia;
 
@@ -25,10 +22,7 @@ public class MBCars implements Serializable, Interfaccia {
 	 */
 	private static final long serialVersionUID = 5412524206250151760L;
 
-	private EntityManager em = emf.createEntityManager();
-	private EntityTransaction transaction = em.getTransaction();
-
-	private List<Carboncar> lista;
+	private List<CompositeCar> lista;
 
 	private FilterCar filter;
 
@@ -36,102 +30,55 @@ public class MBCars implements Serializable, Interfaccia {
 	private boolean editCar;
 	private boolean addCar;
 
-	private Carboncar macchina;
+	private CompositeCar selectedCar;
+
+	private EJBCars ejbCars;
 
 	public void init() {
 		filter = new FilterCar();
-		lista = new ArrayList<Carboncar>();
+		lista = new ArrayList<CompositeCar>();
+		ejbCars = new EJBCars();
 	}
 
 	public void getFilteredCars() {
-		lista = _getCars();
+		_getCars();
 	}
 
 	public void getUnfilteredCars() {
 		_setRefresh();
-		lista = _getCars();
+		_getCars();
 	}
 
-	private List<Carboncar> _getCars() {
-
-		NativeQueryBuilder sql = new NativeQueryBuilder();
-		sql.append("SELECT * FROM carboncars ");
-		sql.append("WHERE 1=1");
-		if (filter.getNome() != null && !filter.getNome().equals("") && !filter.getNome().isEmpty())
-			sql.append("AND nome like ?", "%" + filter.getNome() + "%");
-		if (!CarClass.X.equals(filter.getClasse()) && !filter.getClasse().getCodice().isEmpty())
-			sql.append("AND Class like ?", "%" + filter.getClasse().getCodice() + "%");
-		if (filter.getTier() > 0 && filter.getTier() < 4)
-			sql.append("AND tier = ?", filter.getTier());
-		if (filter.getPrezzo() != 0)
-			sql.append("AND price >= ?", filter.getPrezzo());
-		sql.append("order by tier asc, price asc ");
-
-		_onRefresh();
-		NativeQueryExecutor nq = new NativeQueryExecutor(emf.createEntityManager(), sql.toString());
-
-		@SuppressWarnings("unchecked")
-		List<Object[]> resultList = nq.getResultList();
-
-		Number v;
-		for (Object[] record : resultList) {
-			Carboncar car = new Carboncar();
-			v = (Number) record[0];
-			car.setId(v.intValue());
-			car.setClass_((String) record[1]);
-			car.setNome((String) record[2]);
-			v = (Number) record[3];
-			car.setPrice(v.intValue());
-			v = (Number) record[4];
-			car.setTier(v.intValue());
-			v = (Number) record[5];
-			car.setTopSpeed(v.floatValue());
-			v = (Number) record[6];
-			car.setAcceleration(v.floatValue());
-			v = (Number) record[7];
-			car.setHandling(v.floatValue());
-			lista.add(car);
-		}
-
-		if (lista.size() == 1) {
-			this.singleCar = true;
-			this.macchina = lista.get(0);
-		} else {
-			this.singleCar = false;
-		}
-
-		return lista;
+	private void _getCars() {
+		lista = ejbCars.getCarList(filter);
 	}
 
 	public void addCar() {
-		em.getTransaction().begin();
-		em.persist(macchina);
-		transaction.commit();
+		selectedCar.refreshEntities();
+		ejbCars.addCar(selectedCar.getEntity());
+		this.addCar = false;
 	}
 
 	public void showEditCar() {
 		this.editCar = !this.editCar;
-		this.addCar = false;
 	}
 
 	public void updateCar() {
-		em.getTransaction().begin();
-		em.merge(macchina);
-		transaction.commit();
+		selectedCar.refreshEntities();
+		ejbCars.updateCar(selectedCar.getEntity());
 		getUnfilteredCars();
 		this.editCar = false;
 	}
 
 	public void deleteCar() {
-		em.getTransaction().begin();
-		em.remove(em.find(Carboncar.class, macchina.getId()));
-		transaction.commit();
+		selectedCar.refreshEntities();
+		ejbCars.deleteCar(selectedCar.getEntity());
 		getUnfilteredCars();
 	}
 
 	public void duel() {
 
-		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", macchina.getId());
+		FacesContext.getCurrentInstance().getExternalContext().getFlash().put("id", selectedCar.getEntity().getId());
 
 		ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
 
@@ -152,7 +99,7 @@ public class MBCars implements Serializable, Interfaccia {
 	}
 
 	private void _onRefresh() {
-		setLista(new ArrayList<Carboncar>());
+		setLista(new ArrayList<CompositeCar>());
 	}
 
 	public void redirect() {
@@ -180,17 +127,22 @@ public class MBCars implements Serializable, Interfaccia {
 		}
 	}
 
-
-
 	public void showInsert() {
+		if (this.singleCar) {
+			_getCars();
+			singleCar = false;
+		}
+
 		this.addCar = !this.addCar;
+		selectedCar = new CompositeCar();
+		this.editCar = false;
 	}
 
-	public List<Carboncar> getLista() {
+	public List<CompositeCar> getLista() {
 		return lista;
 	}
 
-	public void setLista(List<Carboncar> lista) {
+	public void setLista(List<CompositeCar> lista) {
 		this.lista = lista;
 	}
 
@@ -210,15 +162,16 @@ public class MBCars implements Serializable, Interfaccia {
 		this.editCar = editCar;
 	}
 
-	public Carboncar getMacchina() {
-		return macchina;
+	public CompositeCar getMacchina() {
+		return selectedCar;
 	}
 
-	public void setMacchina(Carboncar macchina) {
-		this.macchina = macchina;
+	public void setMacchina(CompositeCar macchina) {
+		this.selectedCar = macchina;
 		lista.clear();
-		lista.add(this.macchina);
+		lista.add(this.selectedCar);
 		this.singleCar = true;
+		this.addCar = false;
 	}
 
 	public boolean isAddCar() {
@@ -236,6 +189,7 @@ public class MBCars implements Serializable, Interfaccia {
 	public void setFilter(FilterCar filter) {
 		this.filter = filter;
 	}
+
 	public CarClass[] getCarClasses() {
 		return CarClass.values();
 	}

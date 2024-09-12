@@ -13,18 +13,14 @@ import java.util.Random;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
-import org.project.Entities.Carboncar;
+import org.project.EJB.EJBCars;
 import org.project.Enum.EnumGenerico;
-import org.project.SQL.NativeQueryBuilder;
-import org.project.SQL.NativeQueryExecutor;
+import org.project.Enum.EnumGenerico.CarClass;
+import org.project.Storage.CompositeCar;
+import org.project.Storage.FilterCar;
 import org.project.Storage.Gara;
 import org.project.Storage.Interfaccia;
-
 
 @ManagedBean
 public class MBDowntown implements Serializable, Interfaccia {
@@ -34,8 +30,9 @@ public class MBDowntown implements Serializable, Interfaccia {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private EJBCars ejbCars;
 
-	private Carboncar selectedCar;
+	private CompositeCar selectedCar;
 	private String cssClass;
 	private String[] races = new String[5];
 	private String bossCss;
@@ -47,13 +44,13 @@ public class MBDowntown implements Serializable, Interfaccia {
 	private String win;
 	private boolean fromWin;
 	private String[] racers = new String[5];
-	
-	private Gara[] racess = {new Gara(), new Gara(), new Gara(), new Gara(), new Gara()};
- 
+
+	private Gara[] racess = { new Gara(), new Gara(), new Gara(), new Gara(), new Gara() };
+
 	Map<Double, String> carMap = new LinkedHashMap<>();
 
-	
 	public void init() {
+		ejbCars = new EJBCars();
 		int id = 0;
 		List<String> words = Arrays.asList("drift", "sprint", "circuit");
 
@@ -71,10 +68,10 @@ public class MBDowntown implements Serializable, Interfaccia {
 
 		try {
 			id = (int) FacesContext.getCurrentInstance().getExternalContext().getFlash().get("id");
-			selectedCar = emf.createEntityManager().find(Carboncar.class, id);
+			selectedCar = ejbCars.findCarById(id);
 		} catch (Exception e) {
 			id = 42;
-			selectedCar = emf.createEntityManager().find(Carboncar.class, id);
+			selectedCar = ejbCars.findCarById(id);
 		}
 	}
 
@@ -98,42 +95,9 @@ public class MBDowntown implements Serializable, Interfaccia {
 	}
 
 	public void bossDuel() {
-		
-		
-		NativeQueryBuilder sql = new NativeQueryBuilder();
-		sql.append("SELECT * FROM carboncars");
-		sql.append("WHERE 1=1");
-		sql.append("AND nome = 'Mazda RX-7'");
-		NativeQueryExecutor nq = new NativeQueryExecutor(emf.createEntityManager(), sql.toString());
-		
-		@SuppressWarnings("unchecked")
-		List<Object[]> resultList = nq.getResultList();
-		
-		Number v;
-		Carboncar enemyCar = new Carboncar();
-		for (Object[] record : resultList) {
-			v = (Number) record[0];
-			enemyCar.setId(v.intValue());
-			enemyCar.setClass_((String) record[1]);
-			enemyCar.setNome((String) record[2]);
-			v = (Number) record[3];
-			enemyCar.setPrice(v.intValue());
-			v = (Number) record[4];
-			enemyCar.setTier(v.intValue());
-			v = (Number) record[5];
-			enemyCar.setTopSpeed(v.floatValue());
-			v = (Number) record[6];
-			enemyCar.setAcceleration(v.floatValue());
-			v = (Number) record[7];
-			enemyCar.setHandling(v.floatValue());
-		}
-		
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-//		Root<Carboncar> root = criteria.from(Carboncar.class);
-//		Carboncar enemyCar = new Carboncar();
-//		criteria.select(root).where(cb.equal(root.get("nome"), "Mazda RX-7"));
-//		enemyCar = em.createQuery(criteria).getSingleResult();
+
+		CompositeCar enemyCar = ejbCars.findCarByName("Mazda RX-7");
+
 		double winProb = _duel(selectedCar, enemyCar);
 		if (winProb >= 50.0) {
 			this.win = "Vittoria!";
@@ -150,50 +114,45 @@ public class MBDowntown implements Serializable, Interfaccia {
 	}
 
 	private boolean _race(boolean fromWin) {
-		// logica di duel, ma calcola punteggi per piu macchine
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Carboncar> criteria = cb.createQuery(Carboncar.class);
-		Root<Carboncar> root = criteria.from(Carboncar.class);
-		Predicate condizioni = cb.conjunction();
+
 		boolean win;
 
 		EnumSet<EnumGenerico> allNames = EnumSet.allOf(EnumGenerico.class);
 		List<EnumGenerico> racerName = new ArrayList<>(allNames);
 		Collections.shuffle(racerName);
 		if (fromWin == false) {
-			Predicate tier = cb.equal(root.get("tier"), "1");
-			Predicate class_ = cb.equal(root.get("class_"), "tuner");
-			condizioni = cb.and(tier, class_);
-			criteria.select(root).where(condizioni);
-			List<Carboncar> listaMacchine = em.createQuery(criteria).getResultList();
-			List<Carboncar> macchineRace = new ArrayList<>();
+
+			FilterCar filter = new FilterCar();
+			filter.setClasse(CarClass.T);
+			filter.setTier(1);
+			List<CompositeCar> listaMacchine = ejbCars.getCarList(filter);
+			List<CompositeCar> macchineRace = new ArrayList<>();
 			for (int i = 0; i < 5; i++) {
 				Random random = new Random();
 				int randomindex = random.nextInt(listaMacchine.size());
-				Carboncar car = listaMacchine.get(randomindex);
-				if(i != 4) {
+				CompositeCar car = listaMacchine.get(randomindex);
+				if (i != 4) {
 					macchineRace.add(car);
 				}
-				
+
 				this.racers[i] = racerName.get(i).toString();
 
 			}
 			this.racers[racers.length - 1] = "You";
 			macchineRace.add(selectedCar);
 			win = _calcRaceWinRate(fromWin, macchineRace, carMap);
-			return win; 
+			return win;
 
 		} else {
-			Predicate tier = cb.equal(root.get("tier"), "2");
-			Predicate class_ = cb.equal(root.get("Class"), "tuner");
-			condizioni = cb.and(tier, class_);
-			criteria.select(root).where(condizioni);
-			List<Carboncar> listaMacchine = em.createQuery(criteria).getResultList();
-			List<Carboncar> macchineRace = new ArrayList<>();
+			FilterCar filter = new FilterCar();
+			filter.setClasse(CarClass.T);
+			filter.setTier(2);
+			List<CompositeCar> listaMacchine = ejbCars.getCarList(filter);
+			List<CompositeCar> macchineRace = new ArrayList<>();
 			for (int i = 0; i < 4; i++) {
 				Random random = new Random();
 				int randomindex = random.nextInt(listaMacchine.size());
-				Carboncar car = listaMacchine.get(randomindex);
+				CompositeCar car = listaMacchine.get(randomindex);
 				macchineRace.add(car);
 				this.racers[i] = racerName.get(i).toString();
 
@@ -206,7 +165,7 @@ public class MBDowntown implements Serializable, Interfaccia {
 
 	}
 
-	private boolean _calcRaceWinRate(boolean fromWin, List<Carboncar> macchineRace, Map<Double, String> carMap) {
+	private boolean _calcRaceWinRate(boolean fromWin, List<CompositeCar> macchineRace, Map<Double, String> carMap) {
 		double[] moltiplicatori;
 		int schianto;
 		List<Double> punteggi = new ArrayList<>();
@@ -216,8 +175,8 @@ public class MBDowntown implements Serializable, Interfaccia {
 		int index = 0;
 		double massimo = Double.MIN_VALUE;
 		carMap.clear();
-		for (Carboncar macchina : macchineRace) {
-			if(index != 4) {
+		for (CompositeCar macchina : macchineRace) {
+			if (index != 4) {
 				double enemyScore = (macchina.getTopSpeed() * moltiplicatori[0]
 						+ macchina.getAcceleration() * moltiplicatori[1] + macchina.getHandling() * moltiplicatori[2]);
 				schianto = random.nextInt(101);
@@ -227,41 +186,42 @@ public class MBDowntown implements Serializable, Interfaccia {
 				carMap.put(enemyScore, this.racers[index]);
 				index++;
 			}
-			
+
 		}
 		double myScore = (selectedCar.getTopSpeed() * moltiplicatori[0]
 				+ selectedCar.getAcceleration() * moltiplicatori[1] + selectedCar.getHandling() * moltiplicatori[2]);
 		schianto = random.nextInt(121);
-		schianto++; 
-		myScore = myScore + schianto; 
-		punteggi.add(myScore);  
-		carMap.put(myScore, this.racers[racers.length-1]);
+		schianto++;
+		myScore = myScore + schianto;
+		punteggi.add(myScore);
+		carMap.put(myScore, this.racers[racers.length - 1]);
 		Collections.sort(punteggi);
 		Map<Double, String> clone = new HashMap<>();
 		clone.putAll(carMap);
-		carMap.clear();  
+		carMap.clear();
 		for (double valore : punteggi) {
 			carMap.put(valore, clone.get(valore));
 		}
-		for(Double punteggio : carMap.keySet() ) {
-			if(punteggio > massimo) massimo  = punteggio;
+		for (Double punteggio : carMap.keySet()) {
+			if (punteggio > massimo)
+				massimo = punteggio;
 		}
-		if(massimo == myScore) {
+		if (massimo == myScore) {
 			return true;
-		}else {
+		} else {
 			return false;
 		}
-		
+
 		// intendo fare if myscore > enemyscore cont++, se mio score li batte tutti then
 		// win
 	}
 
-	private double _duel(Carboncar mycar, Carboncar bosscar) {
+	private double _duel(CompositeCar selectedCar, CompositeCar enemyCar) {
 
 		double probVittoria;
 		int differenza;
 //		prima controllo se le macchina sono identiche
-		if (mycar == bosscar) {
+		if (selectedCar == enemyCar) {
 //			sono identiche
 			Random random = new Random();
 			int win = random.nextInt(2);
@@ -277,16 +237,16 @@ public class MBDowntown implements Serializable, Interfaccia {
 				this.score = String.format("%.2f", probVittoria);
 			}
 			return probVittoria;
-		} else if (Integer.parseInt(mycar.getTier()) != Integer.parseInt(bosscar.getTier())) {
+		} else if (selectedCar.getTier() != enemyCar.getTier()) {
 			// qui abbiamo tier diversi, va calcolata prob vittoria
-			if (Integer.parseInt(mycar.getTier()) > Integer.parseInt(bosscar.getTier())) {
-				differenza = Integer.parseInt(mycar.getTier()) - Integer.parseInt(bosscar.getTier());
+			if (selectedCar.getTier() > enemyCar.getTier()) {
+				differenza = selectedCar.getTier() - enemyCar.getTier();
 				if (differenza == 1) {
-					probVittoria = _calcolaProbWin(differenza, true, true, mycar, bosscar);
+					probVittoria = _calcolaProbWin(differenza, true, true, selectedCar, enemyCar);
 					this.score = String.format("%.2f", probVittoria);
 					return probVittoria;
 				} else if (differenza == 2) {
-					probVittoria = _calcolaProbWin(differenza, true, true, mycar, bosscar);
+					probVittoria = _calcolaProbWin(differenza, true, true, selectedCar, enemyCar);
 					this.score = String.format("%.2f", probVittoria);
 					return probVittoria;
 				} else {
@@ -295,13 +255,13 @@ public class MBDowntown implements Serializable, Interfaccia {
 				}
 
 			} else {
-				differenza = Integer.parseInt(bosscar.getTier()) - Integer.parseInt(mycar.getTier());
+				differenza = enemyCar.getTier() - selectedCar.getTier();
 				if (differenza == 1) {
-					probVittoria = _calcolaProbWin(differenza, true, false, mycar, bosscar);
+					probVittoria = _calcolaProbWin(differenza, true, false, selectedCar, enemyCar);
 					this.score = String.format("%.2f", probVittoria);
 					return probVittoria;
 				} else if (differenza == 2) {
-					probVittoria = _calcolaProbWin(differenza, true, false, mycar, bosscar);
+					probVittoria = _calcolaProbWin(differenza, true, false, selectedCar, enemyCar);
 					this.score = String.format("%.2f", probVittoria);
 					return probVittoria;
 				} else {
@@ -313,15 +273,15 @@ public class MBDowntown implements Serializable, Interfaccia {
 		} else {
 			// qui tier uguale, niente di diverso
 			differenza = 0;
-			probVittoria = _calcolaProbWin(differenza, false, false, mycar, bosscar);
+			probVittoria = _calcolaProbWin(differenza, false, false, selectedCar, enemyCar);
 			this.score = String.format("%.2f", probVittoria);
 			return probVittoria;
 		}
 
 	}
 
-	private double _calcolaProbWin(int differenza, boolean diverse, boolean vantaggio, Carboncar mycar,
-			Carboncar enemyCar) {
+	private double _calcolaProbWin(int differenza, boolean diverse, boolean vantaggio, CompositeCar selectedCar,
+			CompositeCar enemyCar) {
 		double[] moltiplicatori;
 		Random random = new Random();
 		_randomRace();
@@ -330,8 +290,9 @@ public class MBDowntown implements Serializable, Interfaccia {
 			// qui sono diverse
 			if (vantaggio) {
 				moltiplicatori = _calcolaMoltiplicatori(this.race);
-				double myScore = (mycar.getTopSpeed() * moltiplicatori[0] + mycar.getAcceleration() * moltiplicatori[1]
-						+ mycar.getHandling() * moltiplicatori[2]) + differenza * 2;
+				double myScore = (selectedCar.getTopSpeed() * moltiplicatori[0]
+						+ selectedCar.getAcceleration() * moltiplicatori[1]
+						+ selectedCar.getHandling() * moltiplicatori[2]) + differenza * 2;
 				double enemyScore = (enemyCar.getTopSpeed() * moltiplicatori[0]
 						+ enemyCar.getAcceleration() * moltiplicatori[1] + enemyCar.getHandling() * moltiplicatori[2]);
 				double winProb = (myScore / (myScore + enemyScore)) * 100;
@@ -348,8 +309,9 @@ public class MBDowntown implements Serializable, Interfaccia {
 				return winProb;
 			} else {
 				moltiplicatori = _calcolaMoltiplicatori(this.race);
-				double myScore = (mycar.getTopSpeed() * moltiplicatori[0] + mycar.getAcceleration() * moltiplicatori[1]
-						+ mycar.getHandling() * moltiplicatori[2]);
+				double myScore = (selectedCar.getTopSpeed() * moltiplicatori[0]
+						+ selectedCar.getAcceleration() * moltiplicatori[1]
+						+ selectedCar.getHandling() * moltiplicatori[2]);
 				double enemyScore = (enemyCar.getTopSpeed() * moltiplicatori[0]
 						+ enemyCar.getAcceleration() * moltiplicatori[1] + enemyCar.getHandling() * moltiplicatori[2])
 						+ differenza * 2;
@@ -367,7 +329,8 @@ public class MBDowntown implements Serializable, Interfaccia {
 				return winProb;
 			}
 		} else {
-			double myScore = (mycar.getTopSpeed() * 0.3 + mycar.getAcceleration() * 0.4 + mycar.getHandling() * 0.3);
+			double myScore = (selectedCar.getTopSpeed() * 0.3 + selectedCar.getAcceleration() * 0.4
+					+ selectedCar.getHandling() * 0.3);
 			double bossScore = (enemyCar.getTopSpeed() * 0.3 + enemyCar.getAcceleration() * 0.4
 					+ enemyCar.getHandling() * 0.3);
 			double winProb = (myScore / (myScore + bossScore)) * 100;
@@ -432,11 +395,11 @@ public class MBDowntown implements Serializable, Interfaccia {
 			this.race = "circuit";
 	}
 
-	public Carboncar getSelectedCar() {
+	public CompositeCar getSelectedCar() {
 		return selectedCar;
 	}
 
-	public void setSelectedCar(Carboncar selectedCar) {
+	public void setSelectedCar(CompositeCar selectedCar) {
 		this.selectedCar = selectedCar;
 	}
 

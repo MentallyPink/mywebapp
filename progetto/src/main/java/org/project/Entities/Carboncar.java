@@ -17,12 +17,12 @@ public class Carboncar implements Serializable {
 	@Id
 	private int id;
 
-	private float acceleration;
+	private double acceleration;
 
 	@Column(name="Class")
 	private String class_;
 
-	private float handling;
+	private double handling;
 
 	private String nome;
 
@@ -31,7 +31,7 @@ public class Carboncar implements Serializable {
 	private int tier;
 
 	@Column(name="top_speed")
-	private float topSpeed;
+	private double topSpeed;
 
 	public Carboncar() {
 	}
@@ -44,11 +44,11 @@ public class Carboncar implements Serializable {
 		this.id = id;
 	}
 
-	public float getAcceleration() {
+	public double getAcceleration() {
 		return this.acceleration;
 	}
 
-	public void setAcceleration(float acceleration) {
+	public void setAcceleration(double acceleration) {
 		this.acceleration = acceleration;
 	}
 
@@ -60,11 +60,11 @@ public class Carboncar implements Serializable {
 		this.class_ = class_;
 	}
 
-	public float getHandling() {
+	public double getHandling() {
 		return this.handling;
 	}
 
-	public void setHandling(float handling) {
+	public void setHandling(double handling) {
 		this.handling = handling;
 	}
 
@@ -92,11 +92,11 @@ public class Carboncar implements Serializable {
 		this.tier = tier;
 	}
 
-	public float getTopSpeed() {
+	public double getTopSpeed() {
 		return this.topSpeed;
 	}
 
-	public void setTopSpeed(float topSpeed) {
+	public void setTopSpeed(double topSpeed) {
 		this.topSpeed = topSpeed;
 	}
 	@Override
